@@ -23,8 +23,6 @@ class Cell
     return @ship.hit if empty? == false
   end
 
-  # Passes test for now but may need to be changed.
-  # if cell is empty but has been fired up before? might cause issue
   def fired_upon?
     @has_been_fired_on
   end
