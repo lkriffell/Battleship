@@ -24,10 +24,10 @@ class Board
     }
   end
 
-  def valid_coordinate?(coordinates)
+  def valid_coordinate?(coords)
     cells.find do |cell|
       # require "pry"; binding.pry
-      if cell.coordinates == coordinates
+      if cell[1].coordinates == coords
         true
       else
         false
