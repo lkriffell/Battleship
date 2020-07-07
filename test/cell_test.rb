@@ -17,29 +17,17 @@ class CellTest < Minitest::Test
 
     assert cell.empty?
   end
-
+# We'll be adding a board class later so we're testing a board of 1 cell
   def test_ship_can_be_placed
     cell1 = cell.new("A1")
-    # cell2 = cell.new("A2")
-    # cell3 = cell.new("B1")
     submarine = ship.new("Submarine", 2)
-
-    # not sure how this method will determine which 2 cells
-    # the ship goes in so I created 3 cells
-
-    #I'm not sure if one cell holds an entire ship
     cell1.place_ship(submarine)
 
     refute cell1.empty?
-    # refute cell2.empty? || cell3.empty?
-    # want either cell2 or cell3 to hold part of the ship
-    # but if cell1 holds the whole ship I think thats whats intended for testing purpose
   end
 
   def test_ship_can_be_fired_upon
     cell1 = cell.new("A1")
-    # cell2 = cell.new("A2")
-    # cell3 = cell.new("B1")
     submarine = ship.new("Submarine", 2)
     cell1.place_ship(submarine)
     cell1.fire_upon
@@ -49,8 +37,6 @@ class CellTest < Minitest::Test
 
   def test_if_ship_knows_its_hit
     cell1 = cell.new("A1")
-    # cell2 = cell.new("A2")
-    # cell3 = cell.new("B1")
     submarine = ship.new("Submarine", 2)
     cell1.place_ship(submarine)
     cell1.fire_upon
@@ -60,8 +46,6 @@ class CellTest < Minitest::Test
 
   def test_if_ship_knows_its_not_hit #redundant test
     cell1 = cell.new("A1")
-    # cell2 = cell.new("A2")
-    # cell3 = cell.new("B1")
     submarine = ship.new("Submarine", 2)
     cell1.place_ship(submarine)
 
