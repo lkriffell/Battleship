@@ -21,19 +21,18 @@ class BoardTest < Minitest::Test
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
 # Placement has to be same length as ship
-skip
     refute board.valid_placement?(cruiser, ["A1", "A2"])
     refute board.valid_placement?(submarine, ["A2", "A3", "A4"])
 # Coordinates must be consecutive
-skip
+
     refute board.valid_placement?(cruiser, ["A1", "A2", "A4"])
     refute board.valid_placement?(submarine, ["A1", "C1"])
 # coordinates can’t be diagonal
-skip
+
     refute board.valid_placement?(cruiser, ["A1", "B2", "C3"])
     refute board.valid_placement?(submarine, ["C2", "D3"])
 # If all the previous checks pass then the placement should be valid
-skip
+
     assert board.valid_placement?(submarine, ["A1", "A2"])
     assert board.valid_placement?(cruiser, ["B1", "C1", "D1"])
   end

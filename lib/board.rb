@@ -35,14 +35,37 @@ class Board
   end
 
   def valid_placement?(ship, placements)
-    # binding.pry
-    if ship.length == placements.size
-      true
-      # If the first coord num plus 1 equals the next coord num
-    elsif split_coords(placements)[1].to_i + 1 == split_coords(placements)[3].to_i
+    if validate_numbers_consecutive(placements) == true
+      if ship.length == placements.size
+        placement_length = true
+        if placement_length == true
+          if validate_letters_consecutive(placements) == true
+            true
+          end
+        end
+      end
+    else
+      false
+    end
+  end
+
+# Helper method to split coords to determine valid placements
+  def split_coords(placements)
+    coords = []
+    placements.map do |coord|
+      coords << coord.split('')
+    end
+    coords.join.split('')
+  end
+
+  def validate_numbers_consecutive(placements)
+    coords = split_coords(placements)
+    # If the first coord num plus 1 equals the next coord num
+    # And the first coord letter equals the third coord letter
+    if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
       # Testing a ship with max length
-      if split_coords(placements).size == 6
-        if split_coords(placements)[3].to_i + 1 == split_coords(placements)[5].to_i
+      if coords.size == 6
+        if coords[3].to_i + 1 == coords[5].to_i && coords[2] == coords[4] || coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord
           true
         else
           false
@@ -50,16 +73,27 @@ class Board
       else
         true
       end
-      # Test valid placement of coord letter
-    # elsif split_coords(placements)[0] ==
+    else
+      false
     end
   end
 
-# Helper method to split coords to determine valid placements
-  def split_coords(placements)
-    placements.map do |coord|
-      coord.split('')
+  def validate_letters_consecutive(placements)
+    coords = split_coords(placements)
+    if coords[1].to_i != coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
+      if coords.size == 6
+        if coords[3].to_i != coords[5].to_i && coords[2] == coords[4] || coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord
+          true
+        else
+          binding.pry
+          false
+        end
+      else
+        true
+      end
+    else
+      binding.pry
+      false
     end
-    placements
   end
 end
