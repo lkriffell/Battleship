@@ -37,7 +37,6 @@ class CellTest < Minitest::Test
   end
 
   def test_if_ship_knows_its_hit
-    skip
     cell_1 = Cell.new("A1")
     submarine = Ship.new("Submarine", 2)
     cell_1.place_ship(submarine)
@@ -47,7 +46,6 @@ class CellTest < Minitest::Test
   end
 
   def test_if_ship_knows_its_not_hit #redundant test
-    skip
     cell_1 = Cell.new("A1")
     submarine = Ship.new("Submarine", 2)
     cell_1.place_ship(submarine)
@@ -56,7 +54,6 @@ class CellTest < Minitest::Test
   end
 
   def test_cell_rendering_no_ship
-    skip
     cell_1 = Cell.new("A1")
     submarine = Ship.new("Submarine", 2)
 
@@ -64,14 +61,13 @@ class CellTest < Minitest::Test
   end
 
   def test_cell_rendering_for_miss
-    skip
     cell_1 = Cell.new("A1")
+    cell_1.fire_upon
 
     assert_equal "M", cell_1.render
   end
 
   def test_cell_rendering_for_hit
-    skip
     cell_1 = Cell.new("A1")
     submarine = Ship.new("Submarine", 2)
     cell_1.place_ship(submarine)
@@ -81,7 +77,6 @@ class CellTest < Minitest::Test
   end
 
   def test_cell_rendering_for_sunk
-    skip
     cell_1 = Cell.new("A1")
     submarine = Ship.new("Submarine", 2)
     cell_1.place_ship(submarine)
