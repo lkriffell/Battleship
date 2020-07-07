@@ -4,90 +4,93 @@ require './lib/cell'
 require './lib/ship'
 
 class CellTest < Minitest::Test
+
   def test_a_cell_exists_and_has_coords
     # Board goes up to D4 (4x4 square board)
-    cell = cell.new("A1")# not sure if it should be ("A1") or ("A", 1) yet
+    cell = Cell.new("A1")
 
-    assert Cell, cell
+    assert_instance_of Cell, cell
     assert_equal "A1", cell.coordinates
   end
 
   def test_if_cell_is_not_holding_a_ship
-    cell = cell.new("A1")
+    cell = Cell.new("A1")
 
     assert cell.empty?
   end
-# We'll be adding a board class later so we're testing a board of 1 cell
-  def test_ship_can_be_placed
-    cell1 = cell.new("A1")
-    submarine = ship.new("Submarine", 2)
-    cell1.place_ship(submarine)
 
-    refute cell1.empty?
+  def test_ship_can_be_placed
+    cell_1 = Cell.new("A1")
+    submarine = Ship.new("Submarine", 2)
+    cell_1.place_ship(submarine)
+
+    refute cell_1.empty?
   end
 
   def test_ship_can_be_fired_upon
-    cell1 = cell.new("A1")
-    submarine = ship.new("Submarine", 2)
-    cell1.place_ship(submarine)
-    cell1.fire_upon
+    cell_1 = Cell.new("A1")
+    submarine = Ship.new("Submarine", 2)
+    cell_1.place_ship(submarine)
+    cell_1.fire_upon
 
     assert_equal 1, submarine.health
   end
 
   def test_if_ship_knows_its_hit
-    cell1 = cell.new("A1")
-    submarine = ship.new("Submarine", 2)
-    cell1.place_ship(submarine)
-    cell1.fire_upon
+    cell_1 = Cell.new("A1")
+    submarine = Ship.new("Submarine", 2)
+    cell_1.place_ship(submarine)
+    cell_1.fire_upon
 
-    assert cell1.fired_upon?
+    assert cell_1.fired_upon?
   end
 
   def test_if_ship_knows_its_not_hit #redundant test
-    cell1 = cell.new("A1")
-    submarine = ship.new("Submarine", 2)
-    cell1.place_ship(submarine)
+    cell_1 = Cell.new("A1")
+    submarine = Ship.new("Submarine", 2)
+    cell_1.place_ship(submarine)
 
-    assert_equal false, cell1.fired_upon?
+    assert_equal false, cell_1.fired_upon?
   end
 
   def test_cell_rendering_no_ship
-    cell1 = cell.new("A1")
-    submarine = ship.new("Submarine", 2)
+    cell_1 = Cell.new("A1")
+    submarine = Ship.new("Submarine", 2)
 
-    assert_equal ".", cell1.render
+    assert_equal ".", cell_1.render
   end
 
   def test_cell_rendering_for_miss
-    cell1 = cell.new("A1")
+    cell_1 = Cell.new("A1")
+    cell_1.fire_upon
 
-    assert_equal "M", cell1.render
+    assert_equal "M", cell_1.render
   end
 
   def test_cell_rendering_for_hit
-    cell1 = cell.new("A1")
-    submarine = ship.new("Submarine", 2)
-    cell1.place_ship(submarine)
-    cell1.fire_upon
+    cell_1 = Cell.new("A1")
+    submarine = Ship.new("Submarine", 2)
+    cell_1.place_ship(submarine)
+    cell_1.fire_upon
 
-    assert_equal "H", cell1.render
+    assert_equal "H", cell_1.render
   end
 
   def test_cell_rendering_for_sunk
-    cell1 = cell.new("A1")
-    submarine = ship.new("Submarine", 2)
-    cell1.place_ship(submarine)
-    cell1.fire_upon
-    cell1.fire_upon
+    cell_1 = Cell.new("A1")
+    submarine = Ship.new("Submarine", 2)
+    cell_1.place_ship(submarine)
+    cell_1.fire_upon
+    cell_1.fire_upon
 
-    assert_equal "X", cell1.render
+    assert_equal "X", cell_1.render
   end
 
   def test_conditional_render
-    cell1 = cell.new("A1")
-    submarine = ship.new("Submarine", 2)
+    skip
+    cell_1 = Cell.new("A1")
+    submarine = Ship.new("Submarine", 2)
 
-    assert_equal "S", cell1.render(true)
+    assert_equal "S", cell_1.render(true)
   end
 end
