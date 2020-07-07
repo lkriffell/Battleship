@@ -87,7 +87,6 @@ class CellTest < Minitest::Test
   end
 
   def test_conditional_render
-    skip
     cell_1 = Cell.new("A1")
     submarine = Ship.new("Submarine", 2)
 
