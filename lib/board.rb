@@ -1,5 +1,5 @@
 require './lib/cell'
-
+require "pry"
 class Board
 
   attr_reader :cells
@@ -26,12 +26,40 @@ class Board
 
   def valid_coordinate?(coords)
     cells.find do |cell|
-      # require "pry"; binding.pry
       if cell[1].coordinates == coords
         true
       else
         false
       end
     end
+  end
+
+  def valid_placement?(ship, placements)
+    # binding.pry
+    if ship.length == placements.size
+      true
+      # If the first coord num plus 1 equals the next coord num
+    elsif split_coords(placements)[1].to_i + 1 == split_coords(placements)[3].to_i
+      # Testing a ship with max length
+      if split_coords(placements).size == 6
+        if split_coords(placements)[3].to_i + 1 == split_coords(placements)[5].to_i
+          true
+        else
+          false
+        end
+      else
+        true
+      end
+      # Test valid placement of coord letter
+    # elsif split_coords(placements)[0] ==
+    end
+  end
+
+# Helper method to split coords to determine valid placements
+  def split_coords(placements)
+    placements.map do |coord|
+      coord.split('')
+    end
+    placements
   end
 end
