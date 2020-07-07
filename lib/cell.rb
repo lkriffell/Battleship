@@ -19,7 +19,7 @@ class Cell
   end
 
   def fire_upon
-
+    return @ship.hit if empty? == false
   end
 
   def fired_upon?

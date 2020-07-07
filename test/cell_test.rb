@@ -28,7 +28,6 @@ class CellTest < Minitest::Test
   end
 
   def test_ship_can_be_fired_upon
-    skip
     cell_1 = Cell.new("A1")
     submarine = Ship.new("Submarine", 2)
     cell_1.place_ship(submarine)
