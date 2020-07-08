@@ -33,10 +33,8 @@ class Board
   end
 
   def valid_placement?(ship, placements)
-    if validate_numbers_consecutive(placements) == true
-      if ship.length == placements.size
-        true
-      end
+    if validate_cell_placements_consecutive(placements) == true && ship.length == placements.size
+      true
     end
   end
 
@@ -49,7 +47,7 @@ class Board
     coords.join.split('')
   end
 
-  def validate_numbers_consecutive(placements)
+  def validate_cell_placements_consecutive(placements)
     coords = split_coords(placements)
     # If the first coord num plus 1 equals the next coord num
     # And the first coord letter equals the next coord letter
