@@ -28,7 +28,7 @@ class Cell
   end
 
   def render(conditional = false)
-    if conditional == true
+    if conditional == true && empty? == false
       "S"
     elsif fired_upon? == true && empty? == true
       "M"

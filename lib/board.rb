@@ -32,17 +32,8 @@ class Board
   end
 
   def valid_placement?(ship, placements)
-    if validate_numbers_consecutive(placements) == true
-      if ship.length == placements.size
-        placement_length = true
-        if placement_length == true
-          if validate_letters_consecutive(placements) == true
-            true
-          end
-        end
-      end
-    else
-      false
+    if validate_cell_placements_consecutive(placements) == true && ship.length == placements.size
+      true
     end
   end
 
@@ -55,52 +46,41 @@ class Board
     coords.join.split('')
   end
 
-  def validate_numbers_consecutive(placements)
-    coords = split_coords(placements)
-    # If the first coord num plus 1 equals the next coord num
-    # And the first coord letter equals the third coord letter
+  def validate_cell_placements_consecutive(placements)
+
+    # # If the first coord num plus 1 equals the next coord num
+    # # And the first coord letter equals the next coord letter
+    # # OR
+    # # If the first coord num equals the next coord num
+    # # And the first coord letter plus one equals the next coord letter
     if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
       # Testing a ship with max length
       if coords.size == 6
         if coords[3].to_i + 1 == coords[5].to_i && coords[2] == coords[4] || coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord
           true
-        else
-          false
         end
       else
         true
       end
-    else
-      false
     end
   end
 
-  def validate_letters_consecutive(placements)
-    coords = split_coords(placements)
-    if coords[1].to_i != coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
-      if coords.size == 6
-        if coords[3].to_i != coords[5].to_i && coords[2] == coords[4] || coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord
-          true
-        else
-          binding.pry
-          false
-        end
-      else
-        true
-      end
-    else
-      binding.pry
-      false
+  def place(ship, coords)
+    index = 0
+
+    coords.length.times do
+      @cells[coords[index]].place_ship(ship)
+      index += 1
     end
   end
 
-def place(ship, coords)
-  index = 0
-
-  coords.length.times do
-    @cells[coords[index]].place_ship(ship)
-    index += 1
+  #FIX ME: I will refactor later with easier to read code
+  def render(show_ship = false)
+    if show_ship == true
+      return "  1 2 3 4 \nA #{@cells["A1"].render(true)} #{@cells["A2"].render(true)} #{@cells["A3"].render(true)} #{@cells["A4"].render(true)} \nB #{@cells["B1"].render(true)} #{@cells["B2"].render(true)} #{@cells["B3"].render(true)} #{@cells["B4"].render(true)} \nC #{@cells["C1"].render(true)} #{@cells["C2"].render(true)} #{@cells["C3"].render(true)} #{@cells["C4"].render(true)} \nD #{@cells["D1"].render(true)} #{@cells["D2"].render(true)} #{@cells["D3"].render(true)} #{@cells["D4"].render(true)} \n"
+    else
+      return "  1 2 3 4 \nA #{@cells["A1"].render} #{@cells["A2"].render} #{@cells["A3"].render} #{@cells["A4"].render} \nB #{@cells["B1"].render} #{@cells["B2"].render} #{@cells["B3"].render} #{@cells["B4"].render} \nC #{@cells["C1"].render} #{@cells["C2"].render} #{@cells["C3"].render} #{@cells["C4"].render} \nD #{@cells["D1"].render} #{@cells["D2"].render} #{@cells["D3"].render} #{@cells["D4"].render} \n"
+    end
   end
-end
 
 end
