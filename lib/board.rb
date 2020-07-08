@@ -37,12 +37,7 @@ class Board
   def valid_placement?(ship, placements)
     if validate_numbers_consecutive(placements) == true
       if ship.length == placements.size
-        placement_length = true
-        if placement_length == true
-          if validate_letters_consecutive(placements) == true
-            true
-          end
-        end
+        true
       end
     else
       false
@@ -74,25 +69,6 @@ class Board
         true
       end
     else
-      false
-    end
-  end
-
-  def validate_letters_consecutive(placements)
-    coords = split_coords(placements)
-    if coords[1].to_i != coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
-      if coords.size == 6
-        if coords[3].to_i != coords[5].to_i && coords[2] == coords[4] || coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord
-          true
-        else
-          binding.pry
-          false
-        end
-      else
-        true
-      end
-    else
-      binding.pry
       false
     end
   end
