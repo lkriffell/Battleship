@@ -1,5 +1,4 @@
 require './lib/cell'
-require "pry"
 
 class Board
 
@@ -32,8 +31,7 @@ class Board
   end
 
   def valid_placement?(ship, placements)
-    # if ship overlaps another ship then returns false immediately
-    if ship_overlap?(placements) == false
+    if ship_overlap?(placements) == true
       return false
     elsif validate_cell_placements_consecutive(placements) == true && ship.length == placements.size
       true
@@ -69,25 +67,31 @@ class Board
   end
 
   def ship_overlap?(placements)
-    cell_position = 0
 
     @cells.each do |cell|
-      if placements.length == 3
-        if cell[cell_position] == placements[0]
-          return false
-        elsif cell[cell_position] == placements[1]
-          return false
-        else
+      if cell[1].ship == nil
+        return false
+      else
+        break
+      end
+    end
+
+
+    acc = []
+
+    @cells.each do |cell|
+      if cell[1].ship != nil
+        acc << cell
+      end
+    end
+
+    acc.each do |cell|
+      if placements.length == 2
+        if cell[0] == placements[0] || placements[1]
           return true
         end
-      elsif placements.length == 2
-        if cell[cell_position] == placements[0]
-          return false
-        elsif cell[cell_position] == placements[1]
-          return false
-        elsif cell[cell_position] == placements[2]
-          return false
-        else
+      elsif placements.length == 3
+        if cell[0] == placements[0] || placements[1] || placements[2]
           return true
         end
       end
