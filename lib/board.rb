@@ -1,9 +1,9 @@
 require './lib/cell'
 
+
 class Board
 
   attr_reader :cells
-
   def initialize()
     @cells = {
       "A1" => Cell.new("A1"),
@@ -21,7 +21,9 @@ class Board
       "D1" => Cell.new("D2"),
       "D2" => Cell.new("D4"),
       "D3" => Cell.new("D3"),
-      "D4" => Cell.new("D4") }
+      "D4" => Cell.new("D4")
+    }
+
   end
 
   def valid_coordinate?(coords)
@@ -116,5 +118,4 @@ class Board
       return "  1 2 3 4 \nA #{@cells["A1"].render} #{@cells["A2"].render} #{@cells["A3"].render} #{@cells["A4"].render} \nB #{@cells["B1"].render} #{@cells["B2"].render} #{@cells["B3"].render} #{@cells["B4"].render} \nC #{@cells["C1"].render} #{@cells["C2"].render} #{@cells["C3"].render} #{@cells["C4"].render} \nD #{@cells["D1"].render} #{@cells["D2"].render} #{@cells["D3"].render} #{@cells["D4"].render} \n"
     end
   end
-
 end
