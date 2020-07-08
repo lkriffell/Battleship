@@ -89,6 +89,7 @@ class CellTest < Minitest::Test
   def test_conditional_render
     cell_1 = Cell.new("A1")
     submarine = Ship.new("Submarine", 2)
+    cell_1.place_ship(submarine)
 
     assert_equal "S", cell_1.render(true)
   end
