@@ -53,6 +53,9 @@ class Board
     coords = split_coords(placements)
     # If the first coord num plus 1 equals the next coord num
     # And the first coord letter equals the third coord letter
+    # OR
+    # If the first coord num equals the next coord num
+    # And the first coord letter comes before the next coord letter
     if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
       # Testing a ship with max length
       if coords.size == 6
