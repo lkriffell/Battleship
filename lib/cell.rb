@@ -2,7 +2,7 @@ require './lib/ship'
 
 class Cell
 
-  attr_reader :coordinates, :has_been_fired_on
+  attr_reader :coordinates, :has_been_fired_on, :ship
 
   def initialize(coordinates)
     @coordinates = coordinates
@@ -28,7 +28,7 @@ class Cell
   end
 
   def render(conditional = false)
-    if conditional == true
+    if conditional == true && empty? == false
       "S"
     elsif fired_upon? == true && empty? == true
       "M"
