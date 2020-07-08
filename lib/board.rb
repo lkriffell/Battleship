@@ -52,10 +52,10 @@ class Board
   def validate_numbers_consecutive(placements)
     coords = split_coords(placements)
     # If the first coord num plus 1 equals the next coord num
-    # And the first coord letter equals the third coord letter
+    # And the first coord letter equals the next coord letter
     # OR
     # If the first coord num equals the next coord num
-    # And the first coord letter comes before the next coord letter
+    # And the first coord letter plus one equals the next coord letter
     if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
       # Testing a ship with max length
       if coords.size == 6
