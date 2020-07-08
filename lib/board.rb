@@ -28,8 +28,6 @@ class Board
     cells.find do |cell|
       if cell[1].coordinates == coords
         true
-      else
-        false
       end
     end
   end
@@ -39,8 +37,6 @@ class Board
       if ship.length == placements.size
         true
       end
-    else
-      false
     end
   end
 
@@ -62,14 +58,10 @@ class Board
       if coords.size == 6
         if coords[3].to_i + 1 == coords[5].to_i && coords[2] == coords[4] || coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord
           true
-        else
-          false
         end
       else
         true
       end
-    else
-      false
     end
   end
 end
