@@ -2,7 +2,7 @@ require './lib/ship'
 
 class Cell
 
-  attr_reader :coordinates, :has_been_fired_on
+  attr_reader :coordinates, :has_been_fired_on, :ship
 
   def initialize(coordinates)
     @coordinates = coordinates
