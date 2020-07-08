@@ -4,6 +4,7 @@ require "pry"
 class Board
 
   attr_reader :cells
+
   def initialize()
     @cells = {
       "A1" => Cell.new("A1"),
@@ -21,8 +22,7 @@ class Board
       "D1" => Cell.new("D2"),
       "D2" => Cell.new("D4"),
       "D3" => Cell.new("D3"),
-      "D4" => Cell.new("D4")
-    }
+      "D4" => Cell.new("D4") }
   end
 
   def valid_coordinate?(coords)
@@ -32,12 +32,15 @@ class Board
   end
 
   def valid_placement?(ship, placements)
-    if validate_cell_placements_consecutive(placements) == true && ship.length == placements.size
+    # if ship overlaps another ship then returns false immediately
+    if ship_overlap?(placements) == false
+      return false
+    elsif validate_cell_placements_consecutive(placements) == true && ship.length == placements.size
       true
     end
   end
 
-# Helper method to split coords to determine valid placements
+  # Helper method to split coords to determine valid placements
   def split_coords(placements)
     coords = []
     placements.map do |coord|
@@ -47,12 +50,12 @@ class Board
   end
 
   def validate_cell_placements_consecutive(placements)
-
-    # # If the first coord num plus 1 equals the next coord num
-    # # And the first coord letter equals the next coord letter
-    # # OR
-    # # If the first coord num equals the next coord num
-    # # And the first coord letter plus one equals the next coord letter
+    coords = split_coords(placements)
+    # If the first coord num plus 1 equals the next coord num
+    # And the first coord letter equals the next coord letter
+    # OR
+    # If the first coord num equals the next coord num
+    # And the first coord letter plus one equals the next coord letter
     if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
       # Testing a ship with max length
       if coords.size == 6
@@ -63,6 +66,33 @@ class Board
         true
       end
     end
+  end
+
+  def ship_overlap?(placements)
+    cell_position = 0
+
+    @cells.each do |cell|
+      if placements.length == 3
+        if cell[cell_position] == placements[0]
+          return false
+        elsif cell[cell_position] == placements[1]
+          return false
+        else
+          return true
+        end
+      elsif placements.length == 2
+        if cell[cell_position] == placements[0]
+          return false
+        elsif cell[cell_position] == placements[1]
+          return false
+        elsif cell[cell_position] == placements[2]
+          return false
+        else
+          return true
+        end
+      end
+    end
+
   end
 
   def place(ship, coords)
