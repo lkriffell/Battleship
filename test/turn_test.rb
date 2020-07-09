@@ -33,9 +33,9 @@ class TurnTest < Minitest::Test
     turn = Turn.new(player, computer)
 
     turn.player.board.place(player_ships[:submarine], ["A1", "A2"])
-    require "pry"; binding.pry
-# undefined method `shoot' for #<Board:0x00007f82c30106d8>
-    player.board.shoot(["A1"])
+
+    # undefined method `shoot' for #<Board:0x00007f82c30106d8>
+    turn.shoot(player, "A1")
 
     assert_equal 1, player_ships[:submarine].health
   end

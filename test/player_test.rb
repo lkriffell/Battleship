@@ -24,12 +24,15 @@ class PlayerTest < Minitest::Test
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
-    # require "pry"; binding.pry
+
+    refute player.has_lost?
+
     player_ships[:submarine].hit
     player_ships[:submarine].hit
     player_ships[:cruiser].hit
     player_ships[:cruiser].hit
     player_ships[:cruiser].hit
+
 
     assert player.has_lost?
   end
