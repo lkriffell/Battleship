@@ -69,7 +69,6 @@ class Board
   end
 
   def ship_overlap?(placements)
-
     @cells.each do |cell|
       if cell[1].ship == nil
         return false
@@ -89,11 +88,11 @@ class Board
 
     acc.each do |cell|
       if placements.length == 2
-        if cell[0] == placements[0] || placements[1]
+        if cell[0] == placements[0] || cell[0] == placements[1]
           return true
         end
       elsif placements.length == 3
-        if cell[0] == placements[0] || placements[1] || placements[2]
+        if cell[0] == placements[0] || cell[0] == placements[1] || cell[0] == placements[2]
           return true
         end
       end

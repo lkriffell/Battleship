@@ -23,7 +23,7 @@ class Turn
 
     until exit_condition == true
       if user_input == 'p'
-
+        #TODO
       elsif user_input == 'q'
         exit_condition = true
         break
@@ -35,14 +35,14 @@ class Turn
 
   def print_board(who, conditional = false)
     if conditional == false
-      puts who.board.render
+      return who.board.render
     else
-      puts who.board.render(true)
+      return who.board.render(true)
     end
   end
 
   def player_setup_game
-    print_board(player)
+    puts print_board(player)
     puts "\nYou have a Submarine which is two units long and a Cruiser which is three units long."
     puts "When choosing it's location on the board, you cannot choose diagonal path or place a ship on top of another ship.\n\n"
 
@@ -56,9 +56,9 @@ class Turn
 
       if player.board.valid_coordinate?(user_input[0]) && player.board.valid_coordinate?(user_input[1])
         if player.board.valid_placement?(player.ships[:submarine], [user_input[0],user_input[1]])
-          puts "Excellent spot! You placed your ships here:\n"
+          puts "\nExcellent spot! You placed your Submarine here:\n"
           player.board.place(player.ships[:submarine], [user_input[0],user_input[1]])
-          print_board(player, true)
+          puts print_board(player, true)
           ship_1_placement = :complete
         else
           puts "Placement is invalid. Try again."
@@ -74,10 +74,10 @@ class Turn
       user_input = gets.chomp.split
 
       if player.board.valid_coordinate?(user_input[0]) && player.board.valid_coordinate?(user_input[1]) && player.board.valid_coordinate?(user_input[2])
-        if player.board.valid_placement?(player.ships[:cruiser], [user_input[0], user_input[1], user_input[2]])
-          puts "Excellent spot! You placed your ships here:\n"
-          player.board.place(player.ships[:submarine], [user_input[0],user_input[1],user_input[2]])
-          print_board(player, true)
+        if player.board.valid_placement?(player.ships[:cruiser], [user_input[0], user_input[1], user_input[2]]) == true
+          puts "\nExcellent spot! You placed your Cruiser here:\n"
+          player.board.place(player.ships[:cruiser], [user_input[0],user_input[1],user_input[2]])
+          puts print_board(player, true)
           ship_2_placement = :complete
         else
           puts "Placement is invalid. Try again."
@@ -88,4 +88,8 @@ class Turn
     end
 
   end #end of setup method
+
+  def computer_setup_game
+
+  end
 end

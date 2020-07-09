@@ -9,7 +9,6 @@ require './lib/turn'
 class TurnTest < Minitest::Test
 
   def test_a_turn_exists
-    skip
     # Player and computer need seperate board objects
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
@@ -24,7 +23,6 @@ class TurnTest < Minitest::Test
   end
 
   def test_players_can_shoot
-    skip
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
@@ -42,7 +40,6 @@ class TurnTest < Minitest::Test
   end
 
   def test_print_board
-    skip
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
@@ -55,13 +52,14 @@ class TurnTest < Minitest::Test
     turn.player.board.place(player_ships[:submarine], ["A1", "A2"])
     turn.player.board.place(player_ships[:cruiser], ["A4", "B4", "C4"])
 
-    #passes visually but test written poorly
-    #assert_equal ("  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . . \n"), turn.print_board(player)
-    #assert_equal ("  1 2 3 4 \nA S S . . \nB . . . . \nC . . . . \nD . . . . \n"), turn.print_board(player, true)
+    assert_equal ("  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . . \n"), turn.print_board(player)
+    assert_equal ("  1 2 3 4 \nA S S . S \nB . . . S \nC . . . S \nD . . . . \n"), turn.print_board(player, true)
 
   end
 
   def test_game_setup_for_player
+    #manual test as requires input
+
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
