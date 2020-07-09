@@ -90,11 +90,9 @@ class TurnTest < Minitest::Test
 
     turn.computer_setup_game
 
-    # => adjust test for whatever input you are going to use
-    # => current test for sub at B3 B4 and cruiser at B1 C1 D1
     # require "pry"; binding.pry
-    assert valid_placement?(:submarine, rand_cells_1)
-    assert valid_placement?(:cruiser, rand_cells_2)
+    assert valid_placement?(:submarine, [rand_cells_1[0],rand_cells_1[1]])
+    assert valid_placement?(:cruiser, [rand_cells_2[0],rand_cells_2[1],rand_cells_2[2]])
   end
 
 end

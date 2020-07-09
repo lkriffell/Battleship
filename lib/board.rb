@@ -53,13 +53,21 @@ class Board
     coords = split_coords(placements)
     # If the first coord num plus 1 equals the next coord num
     # And the first coord letter equals the next coord letter
-    # OR
-    # If the first coord num equals the next coord num
-    # And the first coord letter plus one equals the next coord letter
-    if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord #The or is messing validation up
-      # Testing a ship with max length                # since both cases can be valid at the same time it makes a false valid
-      if coords.size == 6                             # we need to find a way to split up the ORs but still check both side of the OR
-        if coords[3].to_i + 1 == coords[5].to_i && coords[2] == coords[4] || coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord #The or is messing validation up
+    if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2]
+      horizontal = true# Testing a ship with max length
+      if coords.size == 6 && horizontal == true
+        if coords[3].to_i + 1 == coords[5].to_i && coords[2] == coords[4]
+          true
+        end
+      else
+        true
+      end
+      # If the first coord num equals the next coord num
+      # And the first coord letter plus one equals the next coord letter
+    elsif horizontal == nil && coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
+      # require "pry"; binding.pry
+      if coords.size == 6
+        if coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord
           true
         end
       else
@@ -109,7 +117,7 @@ class Board
     end
   end
 
-  #FIX ME: I will refactor later with easier to read code
+  #OPTIMIZE - Will refactor if possible
   def render(show_ship = false)
     if show_ship == true
       return "  1 2 3 4 \nA #{@cells["A1"].render(true)} #{@cells["A2"].render(true)} #{@cells["A3"].render(true)} #{@cells["A4"].render(true)} \nB #{@cells["B1"].render(true)} #{@cells["B2"].render(true)} #{@cells["B3"].render(true)} #{@cells["B4"].render(true)} \nC #{@cells["C1"].render(true)} #{@cells["C2"].render(true)} #{@cells["C3"].render(true)} #{@cells["C4"].render(true)} \nD #{@cells["D1"].render(true)} #{@cells["D2"].render(true)} #{@cells["D3"].render(true)} #{@cells["D4"].render(true)} \n"
