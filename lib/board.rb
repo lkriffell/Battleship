@@ -18,8 +18,8 @@ class Board
       "C2" => Cell.new("C2"),
       "C3" => Cell.new("C3"),
       "C4" => Cell.new("C4"),
-      "D1" => Cell.new("D2"),
-      "D2" => Cell.new("D4"),
+      "D1" => Cell.new("D1"),
+      "D2" => Cell.new("D2"),
       "D3" => Cell.new("D3"),
       "D4" => Cell.new("D4")
     }
@@ -53,13 +53,21 @@ class Board
     coords = split_coords(placements)
     # If the first coord num plus 1 equals the next coord num
     # And the first coord letter equals the next coord letter
-    # OR
-    # If the first coord num equals the next coord num
-    # And the first coord letter plus one equals the next coord letter
-    if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
-      # Testing a ship with max length
+    if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2]
+      horizontal = true# Testing a ship with max length
+      if coords.size == 6 && horizontal == true
+        if coords[3].to_i + 1 == coords[5].to_i && coords[2] == coords[4]
+          true
+        end
+      else
+        true
+      end
+      # If the first coord num equals the next coord num
+      # And the first coord letter plus one equals the next coord letter
+    elsif horizontal == nil && coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
+      # require "pry"; binding.pry
       if coords.size == 6
-        if coords[3].to_i + 1 == coords[5].to_i && coords[2] == coords[4] || coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord
+        if coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord
           true
         end
       else
@@ -69,16 +77,6 @@ class Board
   end
 
   def ship_overlap?(placements)
-
-    @cells.each do |cell|
-      if cell[1].ship == nil
-        return false
-      else
-        break
-      end
-    end
-
-
     acc = []
 
     @cells.each do |cell|
@@ -89,11 +87,11 @@ class Board
 
     acc.each do |cell|
       if placements.length == 2
-        if cell[0] == placements[0] || placements[1]
+        if cell[0] == placements[0] || cell[0] == placements[1]
           return true
         end
       elsif placements.length == 3
-        if cell[0] == placements[0] || placements[1] || placements[2]
+        if cell[0] == placements[0] || cell[0] == placements[1] || cell[0] == placements[2]
           return true
         end
       end
@@ -110,7 +108,7 @@ class Board
     end
   end
 
-  #FIX ME: I will refactor later with easier to read code
+  #OPTIMIZE - Will refactor if possible
   def render(show_ship = false)
     if show_ship == true
       return "  1 2 3 4 \nA #{@cells["A1"].render(true)} #{@cells["A2"].render(true)} #{@cells["A3"].render(true)} #{@cells["A4"].render(true)} \nB #{@cells["B1"].render(true)} #{@cells["B2"].render(true)} #{@cells["B3"].render(true)} #{@cells["B4"].render(true)} \nC #{@cells["C1"].render(true)} #{@cells["C2"].render(true)} #{@cells["C3"].render(true)} #{@cells["C4"].render(true)} \nD #{@cells["D1"].render(true)} #{@cells["D2"].render(true)} #{@cells["D3"].render(true)} #{@cells["D4"].render(true)} \n"
