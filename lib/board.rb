@@ -51,6 +51,7 @@ class Board
 
   def validate_cell_placements_consecutive(placements)
     coords = split_coords(placements)
+    require "pry"; binding.pry
     # If the first coord num plus 1 equals the next coord num
     # And the first coord letter equals the next coord letter
     # OR
