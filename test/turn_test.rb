@@ -58,6 +58,7 @@ class TurnTest < Minitest::Test
   end
 
   def test_game_setup_for_player
+    skip
     # => manual test as requires input
 
     player_board = Board.new
@@ -76,4 +77,24 @@ class TurnTest < Minitest::Test
     assert_equal ("  1 2 3 4 \nA . . . . \nB S . S S \nC S . . . \nD S . . . \n"), turn.print_board(player, true)
 
   end
+  def test_game_setup_for_computer
+
+    player_board = Board.new
+    player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
+    player = Player.new(player_board, player_ships, "player")
+
+    computer_board = Board.new
+    computer_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
+    computer = Player.new(computer_board, computer_ships, "computer")
+    turn = Turn.new(player, computer)
+
+    turn.computer_setup_game
+
+    # => adjust test for whatever input you are going to use
+    # => current test for sub at B3 B4 and cruiser at B1 C1 D1
+    # require "pry"; binding.pry
+    assert valid_placement?(:submarine, rand_cells_1)
+    assert valid_placement?(:cruiser, rand_cells_2)
+  end
+
 end
