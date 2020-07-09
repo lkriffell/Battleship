@@ -7,6 +7,6 @@ class Turn
   end
 
   def shoot(coords)
-
+    coords.fire_upon
   end
 end
