@@ -5,6 +5,10 @@ class Turn
   def initialize(player, computer)
     @player = player
     @computer = computer
+
+    # used for testing
+    # @sub = nil
+    # @cru = nil
   end
 
   def shoot(who, coords)
@@ -87,21 +91,28 @@ class Turn
       end
     end
 
-  end #end of setup method
+  end #end of player_setup_game
 
   def computer_setup_game
     ship_1_placement = :incomplete
     ship_2_placement = :incomplete
-    
+
+    #placement of submarine
     until ship_1_placement == :complete
       rand_cells_1 = computer.board.cells.keys.sample(2)
       if computer.board.valid_coordinate?(rand_cells_1[0]) && computer.board.valid_coordinate?(rand_cells_1[1])
         if computer.board.valid_placement?(computer.ships[:submarine], [rand_cells_1[0],rand_cells_1[1]])
           computer.board.place(computer.ships[:submarine], [rand_cells_1[0],rand_cells_1[1]])
+
+          # for testing purposes
+          #@sub = [rand_cells_1[0],rand_cells_1[1]]
+
           ship_1_placement = :complete
         end
       end
-    end
+    end # end of until loop
+
+    #placement of cruiser
     until ship_2_placement == :complete
       rand_cells_2 = computer.board.cells.keys.sample(3)
       if computer.board.valid_coordinate?(rand_cells_2[0]) && computer.board.valid_coordinate?(rand_cells_2[1]) && computer.board.valid_coordinate?(rand_cells_2[2])
@@ -109,9 +120,15 @@ class Turn
           computer.board.place(computer.ships[:cruiser], [rand_cells_2[0],rand_cells_2[1],rand_cells_2[2]])
           p "Computer's board"
           puts print_board(computer, true)
+
+            # for testing purposes
+            #@cru = [rand_cells_2[0],rand_cells_2[1],rand_cells_2[2]]
+
           ship_2_placement = :complete
         end
       end
-    end
-  end
+    end # end of until loop
+
+  end # end of computer_setup_game
+
 end

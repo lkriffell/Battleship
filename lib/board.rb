@@ -77,15 +77,6 @@ class Board
   end
 
   def ship_overlap?(placements)
-    @cells.each do |cell|
-      if cell[1].ship == nil
-        return false
-      else
-        break
-      end
-    end
-
-
     acc = []
 
     @cells.each do |cell|
