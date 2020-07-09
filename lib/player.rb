@@ -11,4 +11,16 @@ class Player
       true
     end
   end
+
+  def main_menu
+    # Return here when a game ends
+    p "Welcome to BATTLESHIP"
+    p "Enter p to play. Enter q to quit."
+    play = gets.chomp
+      if play == 'p'
+
+      elsif play != 'q'
+        main_menu #Hopefully this returns the user to the main menu
+      end
+  end
 end
