@@ -58,7 +58,7 @@ class TurnTest < Minitest::Test
   end
 
   def test_game_setup_for_player
-    #manual test as requires input
+    # => manual test as requires input
 
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
@@ -69,6 +69,11 @@ class TurnTest < Minitest::Test
     computer = Player.new(computer_board, computer_ships, "computer")
     turn = Turn.new(player, computer)
 
-    turn.player_setup_game
+    turn.player_setup_game # => requires manual input
+
+    # => adjust test for whatever input you are going to use
+    # => current test for sub at B3 B4 and cruiser at B1 C1 D1
+    assert_equal ("  1 2 3 4 \nA . . . . \nB S . S S \nC S . . . \nD S . . . \n"), turn.print_board(player, true)
+
   end
 end
