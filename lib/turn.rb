@@ -21,13 +21,44 @@ class Turn
     puts "Enter p to play. Enter q to quit."
     puts "===================================="
 
-    user_input = gets.chomp.to_downcase
+    user_input = gets.chomp.downcase
 
     exit_condition = false
 
     until exit_condition == true
       if user_input == 'p'
-        #TODO
+        player_setup_game
+        computer_setup_game
+        while player.has_lost? == false && computer.has_lost? == false
+    # display_the_boards
+          p "=============COMPUTER BOARD============="
+          computer.board.render # not displaying although in pry it shows
+          p "==============PLAYER BOARD=============="
+          player.board.render(true) # not displaying although in pry it shows
+    # get_player_aim_and_shoot
+          p "Enter the coordinate for your shot:"
+            player_shot = gets.chomp
+            while computer.board.valid_coordinate?(player_shot) == nil
+              p "Please enter a valid coordinate:"
+              player_shot = gets.chomp
+            end
+            shoot(computer, player_shot)
+    # get_computer_aim_and_shoot
+            fired_upon = :unknown
+            while fired_upon == :unknown
+              computer_shot = player.board.cells.values.sample(1)
+              if computer_shot[0].has_been_fired_on != true
+                fired_upon = :not_yet
+              end
+              require "pry"; binding.pry
+              shoot(player, computer_shot[0].coordinates)
+            end
+    # show_results
+
+            "Your shot on #{player_shot} was a "
+
+        # exit_condition = true
+        end
       elsif user_input == 'q'
         exit_condition = true
         break
@@ -118,8 +149,8 @@ class Turn
       if computer.board.valid_coordinate?(rand_cells_2[0]) && computer.board.valid_coordinate?(rand_cells_2[1]) && computer.board.valid_coordinate?(rand_cells_2[2])
         if computer.board.valid_placement?(computer.ships[:cruiser], [rand_cells_2[0],rand_cells_2[1],rand_cells_2[2]])
           computer.board.place(computer.ships[:cruiser], [rand_cells_2[0],rand_cells_2[1],rand_cells_2[2]])
-          p "Computer's board"
-          puts print_board(computer, true)
+          # p "Computer's board"
+          # puts print_board(computer, true)
 
             # for testing purposes
             #@cru = [rand_cells_2[0],rand_cells_2[1],rand_cells_2[2]]
