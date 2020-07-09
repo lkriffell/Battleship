@@ -56,10 +56,10 @@ class Board
     # OR
     # If the first coord num equals the next coord num
     # And the first coord letter plus one equals the next coord letter
-    if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
-      # Testing a ship with max length
-      if coords.size == 6
-        if coords[3].to_i + 1 == coords[5].to_i && coords[2] == coords[4] || coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord
+    if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2] || coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord #The or is messing validation up
+      # Testing a ship with max length                # since both cases can be valid at the same time it makes a false valid
+      if coords.size == 6                             # we need to find a way to split up the ORs but still check both side of the OR
+        if coords[3].to_i + 1 == coords[5].to_i && coords[2] == coords[4] || coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord #The or is messing validation up
           true
         end
       else
