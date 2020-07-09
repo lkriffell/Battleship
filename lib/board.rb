@@ -18,8 +18,8 @@ class Board
       "C2" => Cell.new("C2"),
       "C3" => Cell.new("C3"),
       "C4" => Cell.new("C4"),
-      "D1" => Cell.new("D2"),
-      "D2" => Cell.new("D4"),
+      "D1" => Cell.new("D1"),
+      "D2" => Cell.new("D2"),
       "D3" => Cell.new("D3"),
       "D4" => Cell.new("D4")
     }
@@ -51,7 +51,6 @@ class Board
 
   def validate_cell_placements_consecutive(placements)
     coords = split_coords(placements)
-    require "pry"; binding.pry
     # If the first coord num plus 1 equals the next coord num
     # And the first coord letter equals the next coord letter
     # OR

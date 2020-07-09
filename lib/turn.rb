@@ -61,10 +61,10 @@ class Turn
           print_board(player, true)
           ship_1_placement = :complete
         else
-          p "The coordinates you entered do not meet the requirements. Try again."
+          puts "Placement is invalid. Try again."
         end
       else
-        puts "The coordinates you entered do not meet the requirements. Try again."
+        puts "Coordinate is invalid. Try again."
       end
     end
 
@@ -80,10 +80,10 @@ class Turn
           print_board(player, true)
           ship_2_placement = :complete
         else
-          p "The coordinates you entered do not meet the requirements. Try again."
+          puts "Placement is invalid. Try again."
         end
       else
-        puts "The coordinates you entered do not meet the requirements. Try again."
+        puts "Coordinate is invalid. Try again."
       end
     end
 
