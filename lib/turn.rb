@@ -82,26 +82,19 @@ class Turn
   end # end of play_game
 
   def display_shot_results(who, player_shot)
-    if who == computer
-      if who.board.cells.fetch(player_shot).ship == nil
+    if who == computer && who.board.cells.fetch(player_shot).ship == nil
         puts "Your shot on #{player_shot} was a miss."
-      elsif who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
+    elsif who == computer && who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
         puts "Your shot on #{player_shot} sunk a ship!"
-      elsif who.board.cells.fetch(player_shot).ship != nil
+    elsif who == computer && who.board.cells.fetch(player_shot).ship != nil
         puts "Your shot on #{player_shot} was a hit!"
-      end
-    end
-
-    if who == player
-      if who.board.cells.fetch(player_shot).ship == nil
+    elsif who == player && who.board.cells.fetch(player_shot).ship == nil
         puts "\nComputer shot on #{player_shot} was a miss."
-      elsif who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
+    elsif who == player && who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
         puts "\nComputer shot on #{player_shot} sunk a ship!"
-      elsif who.board.cells.fetch(player_shot).ship != nil
+    elsif who == player && who.board.cells.fetch(player_shot).ship != nil
         puts "\nComputer shot on #{player_shot} was a hit!"
-      end
     end
-
   end # end of display_shot_results
 
   def print_board(who, conditional = false)
