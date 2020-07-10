@@ -32,9 +32,9 @@ class Turn
         while player.has_lost? == false && computer.has_lost? == false
     # display_the_boards
           p "=============COMPUTER BOARD============="
-          computer.board.render # not displaying although in pry it shows
+          computer.board.render # not displaying in terminal although in pry it shows
           p "==============PLAYER BOARD=============="
-          player.board.render(true) # not displaying although in pry it shows
+          player.board.render(true) # not displaying in terminal although in pry it shows
     # get_player_aim_and_shoot
           p "Enter the coordinate for your shot:"
             player_shot = gets.chomp
@@ -50,12 +50,14 @@ class Turn
               if computer_shot[0].has_been_fired_on != true
                 fired_upon = :not_yet
               end
-              require "pry"; binding.pry
               shoot(player, computer_shot[0].coordinates)
             end
     # show_results
 
-            "Your shot on #{player_shot} was a "
+            require "pry"; binding.pry
+            "Your shot on #{player_shot} was a miss"
+            "Your shot on #{player_shot} was a hit"
+            "Your shot on #{player_shot} sunk a ship!"
 
         # exit_condition = true
         end
