@@ -28,16 +28,29 @@ class Cell
   end
 
   def render(conditional = false)
-    if conditional == true && empty? == false
-      "S"
-    elsif fired_upon? == true && empty? == true
-      "M"
-    elsif fired_upon? == true && @ship.sunk? == true
-      "X"
-    elsif fired_upon? == true && empty? == false
-      "H"
-    elsif fired_upon? == false
-      "."
+
+    if conditional == true
+      if fired_upon? == true && empty? == true
+        "M"
+      elsif fired_upon? == true && @ship.sunk? == true
+        "X"
+      elsif fired_upon? == true && empty? == false
+        "H"
+      elsif empty? == false
+        "S"
+      elsif fired_upon? == false
+        "."
+      end
+    else
+      if fired_upon? == true && empty? == true
+        "M"
+      elsif fired_upon? == true && @ship.sunk? == true
+        "X"
+      elsif fired_upon? == true && empty? == false
+        "H"
+      elsif fired_upon? == false
+        "."
+      end
     end
   end
 

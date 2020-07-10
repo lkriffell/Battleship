@@ -90,8 +90,10 @@ class TurnTest < Minitest::Test
 
     turn.computer_setup_game
 
-    refute turn.computer.board.valid_placement?(turn.computer.ships[:submarine], )
+    refute turn.computer.board.valid_placement?(turn.computer.ships[:submarine], turn.sub)
     refute turn.computer.board.valid_placement?(turn.computer.ships[:cruiser], turn.cru)
   end
+
+  # NEED MORE TESTS
 
 end
