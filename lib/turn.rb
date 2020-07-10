@@ -11,124 +11,6 @@ class Turn
     # @cru = nil
   end # end of initialize
 
-  def shoot(who, coords)
-      who.board.cells[coords].fire_upon
-      display_shot_results(who, coords)
-  end # end of shoot
-
-  def main_menu
-    exit_condition = false
-
-    until exit_condition == true
-      puts "===================================="
-      puts "Welcome to BATTLESHIP"
-      puts "Enter p to play. Enter q to quit."
-      puts "===================================="
-
-      user_input = gets.chomp.downcase
-      if user_input == 'p'
-        computer_setup_game
-        player_setup_game
-        play_game
-      elsif user_input == 'q'
-        puts "Thanks for playing! Come again."
-        exit_condition = true
-        break
-      else
-        puts "Oops! Please enter a valid option."
-      end
-    end # end of until loop
-  end # end of main_menu
-
-  def play_game
-    until player.has_lost? || computer.has_lost?
-
-      # display_the_boards
-      puts "\n=============COMPUTER BOARD============="
-      puts print_board(computer)
-      puts "==============YOUR BOARD=============="
-      puts print_board(player, true)
-
-      # PLAYER SHOOT
-      shot_successful = :fail
-
-      until shot_successful == :success
-        print "\nEnter the coordinate for your shot: "
-        player_shot = gets.chomp
-        if computer.board.valid_coordinate?(player_shot) && computer.board.cells[player_shot].has_been_fired_on == false
-          shoot(computer, player_shot)
-          break shot_successful = :success
-        elsif computer.board.valid_coordinate?(player_shot) && computer.board.cells[player_shot].has_been_fired_on == true
-          puts "Coordinate #{player_shot} has already been fired upon. Try again."
-        elsif !computer.board.valid_coordinate?(player_shot) && computer.board.cells[player_shot].has_been_fired_on == false
-          puts "Coordinate #{player_shot} is invalid. Try again."
-        else
-          puts "Invalid input. Try again."
-        end
-      end
-
-      # COMPUTER SHOOT
-      shot_successful = :fail
-
-      until shot_successful == :success
-        random_shot  = player.board.cells.values.sample(1)
-        if random_shot[0].has_been_fired_on == true
-          # coordinate has been fired upon return to beginning of loop
-        elsif random_shot[0].has_been_fired_on == false
-          shoot(player, random_shot[0].coordinates)
-          shot_successful = :success
-        end
-      end
-
-
-      # fired_upon = :unknown
-      # while fired_upon == :unknown
-      #   computer_shot = player.board.cells.values.sample(1)
-      #   if computer_shot[0].has_been_fired_on != true
-      #     fired_upon = :not_yet
-      #   end
-      #   shoot(player, computer_shot[0].coordinates)
-      # end
-
-    end # end of until loop
-
-    # display winner message to winner
-    if player.has_lost?
-      display_winner(computer)
-    else
-      display_winner(player)
-    end
-
-  end # end of play_game
-
-  def display_shot_results(who, player_shot)
-    if who == computer && who.board.cells.fetch(player_shot).ship == nil
-        puts "\nYour shot on #{player_shot} was a miss."
-    elsif who == computer && who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
-        puts "\nYour shot on #{player_shot} sunk a ship!"
-    elsif who == computer && who.board.cells.fetch(player_shot).ship != nil
-        puts "\nYour shot on #{player_shot} was a hit!"
-    elsif who == player && who.board.cells.fetch(player_shot).ship == nil
-        puts "\n#{computer.name} shot on #{player_shot} was a miss."
-    elsif who == player && who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
-        puts "\n#{computer.name} shot on #{player_shot} sunk a ship!"
-    elsif who == player && who.board.cells.fetch(player_shot).ship != nil
-        puts "\n#{computer.name} shot on #{player_shot} was a hit!"
-    end
-  end # end of display_shot_results
-
-  def print_board(who, conditional = false)
-    if conditional == false
-      return who.board.render
-    else
-      return who.board.render(true)
-    end
-  end # end of print_board
-
-  def display_winner(winner)
-    puts "\nCongratulations! #{winner.name} won Battleship!\n"
-  end # end of display_winner
-
   def player_setup_game
 
     puts "\n\nIt's time to place your ships! You have a Submarine which is two units long and a Cruiser which is three units long. When choosing it's location on the board, you cannot choose diagonal path or place a ship on top of another ship.\n\n"
@@ -141,7 +23,7 @@ class Turn
     #placement of submarine
     until ship_1_placement == :complete
       print "\nPlease enter the location for your Submarine (ex. A1 A2 or C4 D4): "
-      user_input = gets.chomp.split
+      user_input = gets.chomp.upcase.split
 
       if player.board.valid_coordinate?(user_input[0]) && player.board.valid_coordinate?(user_input[1])
         if player.board.valid_placement?(player.ships[:submarine], [user_input[0],user_input[1]])
@@ -160,7 +42,7 @@ class Turn
     #placement of cruiser
     until ship_2_placement == :complete
       print "\nPlease enter the location for your Cruiser (ex. A1 A2 A3 or B2 C2 D2): "
-      user_input = gets.chomp.split
+      user_input = gets.chomp.upcase.split
 
       if player.board.valid_coordinate?(user_input[0]) && player.board.valid_coordinate?(user_input[1]) && player.board.valid_coordinate?(user_input[2])
         if player.board.valid_placement?(player.ships[:cruiser], [user_input[0], user_input[1], user_input[2]]) == true
@@ -215,5 +97,92 @@ class Turn
     end # end of until loop
 
   end # end of computer_setup_game
+
+  def play_game
+    # sets up computer board and player board
+    computer_setup_game
+    player_setup_game
+
+    until player.has_lost? || computer.has_lost?
+
+      # display_the_boards
+      puts "\n=============COMPUTER BOARD============="
+      puts print_board(computer)
+      puts "==============YOUR BOARD=============="
+      puts print_board(player, true)
+
+      # PLAYER SHOOT
+      shot_successful = :fail
+
+      until shot_successful == :success
+        print "\nEnter the coordinate for your shot: "
+        player_shot = gets.chomp.upcase
+        if computer.board.valid_coordinate?(player_shot) && computer.board.cells[player_shot].has_been_fired_on == false
+          shoot(computer, player_shot)
+          break shot_successful = :success
+        elsif computer.board.valid_coordinate?(player_shot) && computer.board.cells[player_shot].has_been_fired_on == true
+          puts "Coordinate #{player_shot} has already been fired upon. Try again."
+        else
+          puts "Coordinate #{player_shot} is invalid. Try again."
+        end
+      end
+
+      # COMPUTER SHOOT
+      shot_successful = :fail
+
+      until shot_successful == :success
+        random_shot  = player.board.cells.values.sample(1)
+        if random_shot[0].has_been_fired_on == true
+          # coordinate has been fired upon return to beginning of loop
+        elsif random_shot[0].has_been_fired_on == false
+          shoot(player, random_shot[0].coordinates)
+          shot_successful = :success
+        end
+      end
+    end # end of until loop
+
+    # display winner message to winner
+    if player.has_lost?
+      display_winner(computer)
+    else
+      display_winner(player)
+    end
+
+  end # end of play_game
+
+  def shoot(who, coords)
+      who.board.cells[coords].fire_upon
+      display_shot_results(who, coords)
+  end # end of shoot
+
+  def display_shot_results(who, player_shot)
+    if who == computer && who.board.cells.fetch(player_shot).ship == nil
+        puts "\nYour shot on #{player_shot} was a miss."
+    elsif who == computer && who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
+        puts "\nYour shot on #{player_shot} sunk a ship!"
+    elsif who == computer && who.board.cells.fetch(player_shot).ship != nil
+        puts "\nYour shot on #{player_shot} was a hit!"
+    elsif who == player && who.board.cells.fetch(player_shot).ship == nil
+        puts "\n#{computer.name} shot on #{player_shot} was a miss."
+    elsif who == player && who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
+        puts "\n#{computer.name} shot on #{player_shot} sunk a ship!"
+    elsif who == player && who.board.cells.fetch(player_shot).ship != nil
+        puts "\n#{computer.name} shot on #{player_shot} was a hit!"
+    end
+  end # end of display_shot_results
+
+  def print_board(who, conditional = false)
+    if conditional == false
+      return who.board.render
+    else
+      return who.board.render(true)
+    end
+  end # end of print_board
+
+  def display_winner(winner)
+    return puts "\nCongratulations! You won Battleship!\n" if winner == player
+    return puts "\nYou lost all your ships! Computer won.\n" if winner == computer
+  end # end of display_winner
+
 
 end
