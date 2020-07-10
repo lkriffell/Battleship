@@ -12,7 +12,8 @@ class Turn
   end
 
   def shoot(who, coords)
-    who.board.cells[coords].fire_upon
+      who.board.cells[coords].fire_upon
+      display_shot_results(who, coords)
   end
 
   def main_menu
@@ -27,48 +28,81 @@ class Turn
 
     until exit_condition == true
       if user_input == 'p'
-        player_setup_game
         computer_setup_game
-        while player.has_lost? == false && computer.has_lost? == false
-    # display_the_boards
-          p "=============COMPUTER BOARD============="
-          computer.board.render # not displaying in terminal although in pry it shows
-          p "==============PLAYER BOARD=============="
-          player.board.render(true) # not displaying in terminal although in pry it shows
-    # get_player_aim_and_shoot
-          p "Enter the coordinate for your shot:"
-            player_shot = gets.chomp
-            while computer.board.valid_coordinate?(player_shot) == nil
-              p "Please enter a valid coordinate:"
-              player_shot = gets.chomp
-            end
-            shoot(computer, player_shot)
-    # get_computer_aim_and_shoot
-            fired_upon = :unknown
-            while fired_upon == :unknown
-              computer_shot = player.board.cells.values.sample(1)
-              if computer_shot[0].has_been_fired_on != true
-                fired_upon = :not_yet
-              end
-              shoot(player, computer_shot[0].coordinates)
-            end
-    # show_results
-
-            require "pry"; binding.pry
-            "Your shot on #{player_shot} was a miss"
-            "Your shot on #{player_shot} was a hit"
-            "Your shot on #{player_shot} sunk a ship!"
-
-        # exit_condition = true
-        end
+        player_setup_game
+        play_game
       elsif user_input == 'q'
+        puts "Thanks for playing! Come again."
         exit_condition = true
         break
       else
         puts "Oops! Please enter a valid option."
       end
+    end # end of until loop
+  end # end of main_menu
+
+  def play_game
+    until player.has_lost? || computer.has_lost?
+
+      # display_the_boards
+      puts "\n=============COMPUTER BOARD============="
+      puts print_board(computer)
+      puts "==============YOUR BOARD=============="
+      puts print_board(player, true)
+
+      # PLAYER SHOOT
+      shot_successful = :fail
+
+      until shot_successful == :sucess
+        print "\nEnter the coordinate for your shot: "
+        player_shot = gets.chomp
+        if computer.board.valid_coordinate?(player_shot) && computer.board.cells[player_shot].has_been_fired_on == false
+          shoot(computer, player_shot)
+          break shot_successful = :sucess
+        elsif computer.board.valid_coordinate?(player_shot) && computer.board.cells[player_shot].has_been_fired_on == true
+          puts "Coordinate #{player_shot} has already been fired upon. Try again."
+        elsif !computer.board.valid_coordinate?(player_shot) && computer.board.cells[player_shot].has_been_fired_on == false
+          puts "Coordinate #{player_shot} is invalid. Try again."
+        else
+          puts "Invalid input. Try again."
+        end
+      end
+
+      # COMPUTER SHOOT
+      fired_upon = :unknown
+      while fired_upon == :unknown
+        computer_shot = player.board.cells.values.sample(1)
+        if computer_shot[0].has_been_fired_on != true
+          fired_upon = :not_yet
+        end
+        shoot(player, computer_shot[0].coordinates)
+      end
+
+    end # end of until loop
+  end # end of play_game
+
+  def display_shot_results(who, player_shot)
+    if who == computer
+      if who.board.cells.fetch(player_shot).ship == nil
+        puts "Your shot on #{player_shot} was a miss."
+      elsif who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
+        puts "Your shot on #{player_shot} sunk a ship!"
+      elsif who.board.cells.fetch(player_shot).ship != nil
+        puts "Your shot on #{player_shot} was a hit!"
+      end
     end
-  end
+
+    if who == player
+      if who.board.cells.fetch(player_shot).ship == nil
+        puts "\nComputer shot on #{player_shot} was a miss."
+      elsif who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
+        puts "\nComputer shot on #{player_shot} sunk a ship!"
+      elsif who.board.cells.fetch(player_shot).ship != nil
+        puts "\nComputer shot on #{player_shot} was a hit!"
+      end
+    end
+
+  end # end of display_shot_results
 
   def print_board(who, conditional = false)
     if conditional == false
@@ -79,21 +113,22 @@ class Turn
   end
 
   def player_setup_game
+
+    puts "\n\nIt's time to place your ships! You have a Submarine which is two units long and a Cruiser which is three units long. When choosing it's location on the board, you cannot choose diagonal path or place a ship on top of another ship.\n\n"
+    puts "=============YOUR BOARD============="
     puts print_board(player)
-    puts "\nYou have a Submarine which is two units long and a Cruiser which is three units long."
-    puts "When choosing it's location on the board, you cannot choose diagonal path or place a ship on top of another ship.\n\n"
 
     ship_1_placement = :incomplete
     ship_2_placement = :incomplete
 
     #placement of submarine
     until ship_1_placement == :complete
-      print "Please enter the location for your Submarine (ex. A1 A2 or C4 D4): "
+      print "\nPlease enter the location for your Submarine (ex. A1 A2 or C4 D4): "
       user_input = gets.chomp.split
 
       if player.board.valid_coordinate?(user_input[0]) && player.board.valid_coordinate?(user_input[1])
         if player.board.valid_placement?(player.ships[:submarine], [user_input[0],user_input[1]])
-          puts "\nExcellent spot! You placed your Submarine here:\n"
+          puts "\nExcellent spot! You placed your Submarine at #{user_input[0]} and #{user_input[1]}.\n"
           player.board.place(player.ships[:submarine], [user_input[0],user_input[1]])
           puts print_board(player, true)
           ship_1_placement = :complete
@@ -112,7 +147,7 @@ class Turn
 
       if player.board.valid_coordinate?(user_input[0]) && player.board.valid_coordinate?(user_input[1]) && player.board.valid_coordinate?(user_input[2])
         if player.board.valid_placement?(player.ships[:cruiser], [user_input[0], user_input[1], user_input[2]]) == true
-          puts "\nExcellent spot! You placed your Cruiser here:\n"
+          puts "\nExcellent spot! You placed your Cruiser at #{user_input[0]}, #{user_input[1]} and #{user_input[2]}.\n"
           player.board.place(player.ships[:cruiser], [user_input[0],user_input[1],user_input[2]])
           puts print_board(player, true)
           ship_2_placement = :complete
