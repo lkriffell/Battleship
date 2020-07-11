@@ -96,5 +96,8 @@ class BoardTest < Minitest::Test
   def test_get_board_size
     board = Board.new
     board.get_board_size
+    # Manual test (Make height: 7 width: 7)
+    require "pry"; binding.pry
+    assert_equal 49, board.cells.count
   end
 end
