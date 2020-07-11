@@ -101,6 +101,7 @@ class Turn
   def play_game
     # sets up computer board and player board
     computer_setup_game
+    require "pry"; binding.pry
     player_setup_game
 
     until player.has_lost? || computer.has_lost?

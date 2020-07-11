@@ -20,10 +20,11 @@ until exit_condition == true
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "Randy")
-
+    player.board.get_board_size # not sure how to set both boards at once
     computer_board = Board.new
     computer_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     computer = Player.new(computer_board, computer_ships, "Jeeves => computer")
+    computer.board.get_board_size # not sure how to set both boards at once
     turn = Turn.new(player, computer)
 
     turn.play_game

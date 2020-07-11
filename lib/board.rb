@@ -30,21 +30,23 @@ class Board
     p "What height would you like the board to be? (26 max)"
     height = gets.chomp.to_i
     p "What width would you like the board to be?"
-    width = gets.chomp
+    width = gets.chomp.to_i
     alphabet = ('a'..'z').to_a
     letters = alphabet[0..height - 1]
     letters.each do |letter|
       column = 1
-      width.to_i.times do
+      width.times do
         coord = letter + column.to_s
         @cells[coord.upcase] = Cell.new(coord.upcase)
         coord = ''
         column += 1
       end
     end
+    # require "pry"; binding.pry  # @cells is filled here but empty when valid_coordinate? called
   end
 
   def valid_coordinate?(coords)
+    # require "pry"; binding.pry
     cells.find do |cell|
       return true if cell[1].coordinates == coords
     end
