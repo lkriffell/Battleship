@@ -5,25 +5,43 @@ class Board
 
   attr_reader :cells
   def initialize()
-    @cells = {
-      "A1" => Cell.new("A1"),
-      "A2" => Cell.new("A2"),
-      "A3" => Cell.new("A3"),
-      "A4" => Cell.new("A4"),
-      "B1" => Cell.new("B1"),
-      "B2" => Cell.new("B2"),
-      "B3" => Cell.new("B3"),
-      "B4" => Cell.new("B4"),
-      "C1" => Cell.new("C1"),
-      "C2" => Cell.new("C2"),
-      "C3" => Cell.new("C3"),
-      "C4" => Cell.new("C4"),
-      "D1" => Cell.new("D1"),
-      "D2" => Cell.new("D2"),
-      "D3" => Cell.new("D3"),
-      "D4" => Cell.new("D4")
+    @cells = {  #Uncomment @cells for testing
+      # "A1" => Cell.new("A1"),
+      # "A2" => Cell.new("A2"),
+      # "A3" => Cell.new("A3"),
+      # "A4" => Cell.new("A4"),
+      # "B1" => Cell.new("B1"),
+      # "B2" => Cell.new("B2"),
+      # "B3" => Cell.new("B3"),
+      # "B4" => Cell.new("B4"),
+      # "C1" => Cell.new("C1"),
+      # "C2" => Cell.new("C2"),
+      # "C3" => Cell.new("C3"),
+      # "C4" => Cell.new("C4"),
+      # "D1" => Cell.new("D1"),
+      # "D2" => Cell.new("D2"),
+      # "D3" => Cell.new("D3"),
+      # "D4" => Cell.new("D4")
     }
 
+  end
+
+  def get_board_size
+    p "What height would you like the board to be? (26 max)"
+    height = gets.chomp.to_i
+    p "What width would you like the board to be?"
+    width = gets.chomp
+    alphabet = ('a'..'z').to_a
+    letters = alphabet[0..height - 1]
+    letters.each do |letter|
+      column = 1
+      width.to_i.times do
+        coord = letter + column.to_s
+        @cells[coord.upcase] = Cell.new(coord.upcase)
+        coord = ''
+        column += 1
+      end
+    end
   end
 
   def valid_coordinate?(coords)

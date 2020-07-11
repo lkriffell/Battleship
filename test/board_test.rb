@@ -2,6 +2,7 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require './lib/board'
 require './lib/ship'
+require './lib/cell'
 
 class BoardTest < Minitest::Test
 
@@ -12,6 +13,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_valid_and_invalid_coordinates
+    skip
     board = Board.new
 
     assert board.valid_coordinate?("A1")
@@ -19,6 +21,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_valid_placement_of_ships
+    skip
     board = Board.new
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
@@ -41,6 +44,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_it_can_place_board
+    skip
     board = Board.new
     cruiser = Ship.new("Cruiser", 3)
 
@@ -56,6 +60,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_overlapping_ship_2?
+    skip
     board = Board.new
     cruiser = Ship.new("Cruiser", 3)
 
@@ -67,6 +72,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_overlapping_ship_3?
+    skip
     board = Board.new
     submarine = Ship.new("Submarine", 2)
 
@@ -78,11 +84,17 @@ class BoardTest < Minitest::Test
   end
 
   def test_board_render
+    skip
     board = Board.new
     cruiser = Ship.new("Cruiser", 3)
     board.place(cruiser, ["A1", "A2", "A3"])
 
     assert_equal "  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . . \n", board.render
     assert_equal "  1 2 3 4 \nA S S S . \nB . . . . \nC . . . . \nD . . . . \n", board.render(true)
+  end
+
+  def test_get_board_size
+    board = Board.new
+    board.get_board_size
   end
 end
