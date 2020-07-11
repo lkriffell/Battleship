@@ -6,22 +6,22 @@ class Board
   attr_reader :cells, :letters, :width
   def initialize()
     @cells = {  #Uncomment @cells for testing
-      # "A1" => Cell.new("A1"),
-      # "A2" => Cell.new("A2"),
-      # "A3" => Cell.new("A3"),
-      # "A4" => Cell.new("A4"),
-      # "B1" => Cell.new("B1"),
-      # "B2" => Cell.new("B2"),
-      # "B3" => Cell.new("B3"),
-      # "B4" => Cell.new("B4"),
-      # "C1" => Cell.new("C1"),
-      # "C2" => Cell.new("C2"),
-      # "C3" => Cell.new("C3"),
-      # "C4" => Cell.new("C4"),
-      # "D1" => Cell.new("D1"),
-      # "D2" => Cell.new("D2"),
-      # "D3" => Cell.new("D3"),
-      # "D4" => Cell.new("D4")
+      "A1" => Cell.new("A1"),
+      "A2" => Cell.new("A2"),
+      "A3" => Cell.new("A3"),
+      "A4" => Cell.new("A4"),
+      "B1" => Cell.new("B1"),
+      "B2" => Cell.new("B2"),
+      "B3" => Cell.new("B3"),
+      "B4" => Cell.new("B4"),
+      "C1" => Cell.new("C1"),
+      "C2" => Cell.new("C2"),
+      "C3" => Cell.new("C3"),
+      "C4" => Cell.new("C4"),
+      "D1" => Cell.new("D1"),
+      "D2" => Cell.new("D2"),
+      "D3" => Cell.new("D3"),
+      "D4" => Cell.new("D4")
     }
     @letters = letters
     @width = width
@@ -30,10 +30,9 @@ class Board
 
 
   def valid_coordinate?(coords)
-    # require "pry"; binding.pry
-    cells.find do |cell|
-      return true if cell[1].coordinates == coords
-    end
+    # split_coords(coords)
+      @cells.include?(coords)
+      # cell.coordinates == coords
   end
 
   def valid_placement?(ship, placements)
@@ -48,13 +47,22 @@ class Board
   def split_coords(placements)
     coords = []
     placements.map do |coord|
-      coords << coord.split('')
+      split_up_coords = coord.split('')
+      if split_up_coords.size == 3
+        coords << split_up_coords[0]
+        coords << split_up_coords[1..2].join
+      elsif split_up_coords.size == 4
+        coords << split_up_coords[0]
+        coords << split_up_coords[1..3].join
+      else
+        coords << split_up_coords[0]
+        coords << split_up_coords[1]
+      end
     end
-    coords.join.split('')
   end
 
   def validate_cell_placements_consecutive(placements)
-    coords = split_coords(placements)
+    coords = split_coords(placements).first # This returns an array of two arrays (The second array is equal to the first and we only want one)
     # If the first coord num plus 1 equals the next coord num
     # And the first coord letter equals the next coord letter
     if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2]
@@ -82,20 +90,20 @@ class Board
 
   def ship_overlap?(placements)
     acc = []
-
-    @cells.each do |cell|
+    cells.each do |cell|
       if cell[1].ship != nil
-        acc << cell
+        acc << cell[1]
       end
     end
 
     acc.each do |cell|
+      # require "pry"; binding.pry
       if placements.length == 2
-        if cell[0] == placements[0] || cell[0] == placements[1]
+        if cell.coordinates == placements[0] || cell.coordinates == placements[1]
           return true
         end
       elsif placements.length == 3
-        if cell[0] == placements[0] || cell[0] == placements[1] || cell[0] == placements[2]
+        if cell.coordinates == placements[0] || cell.coordinates == placements[1] || cell.coordinates == placements[2]
           return true
         end
       end

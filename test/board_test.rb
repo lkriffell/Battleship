@@ -17,7 +17,7 @@ class BoardTest < Minitest::Test
     board = Board.new
 
     assert board.valid_coordinate?("A1")
-    refute board.valid_coordinate?("A5")
+    refute board.valid_coordinate?("A1000")
   end
 
   def test_valid_placement_of_ships
@@ -28,7 +28,7 @@ class BoardTest < Minitest::Test
 
     # placement has to be same length as ship
     refute board.valid_placement?(cruiser, ["A1", "A2"])
-    refute board.valid_placement?(submarine, ["A2", "A3", "A4"])
+    refute board.valid_placement?(submarine, ["A8", "A9", "A10"])
 
     # coordinates must be consecutive
     refute board.valid_placement?(cruiser, ["A1", "A2", "A4"])
@@ -39,8 +39,17 @@ class BoardTest < Minitest::Test
     refute board.valid_placement?(submarine, ["C2", "D3"])
 
     # if all the previous checks pass then the placement should be valid
-    assert_equal true, board.valid_placement?(submarine, ["A1", "A2"])
-    assert_equal true, board.valid_placement?(cruiser, ["B1", "C1", "D1"])
+    assert_equal true, board.valid_placement?(submarine, ["A10", "A11"])
+    assert_equal true, board.valid_placement?(cruiser, ["B10", "C10", "D10"])
+  end
+
+  def test_validate_cell_placements_consecutive
+    board = Board.new
+    board.get_board_size
+    # Manual test (Must enter a board size greater than 100)
+
+    assert board.validate_cell_placements_consecutive(["A109", "A110"])
+    assert board.validate_cell_placements_consecutive(["B107", "C107", "D107"])
   end
 
   def test_it_can_place_board
@@ -94,6 +103,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_get_board_size
+    skip
     board = Board.new
     board.get_board_size
     # Manual test (Make height: 7 width: 7)
