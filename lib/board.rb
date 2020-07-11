@@ -134,6 +134,7 @@ class Board
         end
       end
     end
+    board_string
   end
 
   def get_board_size
