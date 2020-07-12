@@ -9,11 +9,26 @@ class Turn
     # used for testing
     # @sub = nil
     # @cru = nil
-  end # end of initialize
+  end #initialize
+
+  def setup_board
+
+    print "\nWhat size board would you like (ex. 4x4, 10x10, etc.)? "
+    user_input = gets.chomp.split("x")
+    height = user_input[0].to_i
+    width = user_input[0].to_i
+
+    player.board.set_board_size(height, width)
+    computer.board.set_board_size(height, width)
+
+    # returns length of board - not used by game
+    # used for testing
+    player.board.cells.length
+  end #setup_board
 
   def player_setup_game
 
-    puts "\n\nIt's time to place your ships! You have a Submarine which is two units long and a Cruiser which is three units long. When choosing it's location on the board, you cannot choose diagonal path or place a ship on top of another ship.\n\n"
+    puts "\nIt's time to place your ships! You have a Submarine which is two units long and a Cruiser which is three units long. When choosing it's location on the board, you cannot choose diagonal path or place a ship on top of another ship.\n\n"
     puts "=============YOUR BOARD============="
     # require "pry"; binding.pry
     puts print_board(player)
@@ -59,7 +74,7 @@ class Turn
       end
     end
 
-  end # end of player_setup_game
+  end #player_setup_game
 
   def computer_setup_game
     ship_1_placement = :incomplete
@@ -97,13 +112,18 @@ class Turn
       end
     end # end of until loop
 
-  end # end of computer_setup_game
+  end #computer_setup_game
 
-  def play_game
-    # sets up computer board and player board
+  def game_setup
+    # sets up board size
+    setup_board
+
+    # sets up ships for the player and computer
     computer_setup_game
     player_setup_game
+  end #game_setup
 
+  def play_game
     until player.has_lost? || computer.has_lost?
 
       # display_the_boards
@@ -149,28 +169,32 @@ class Turn
       display_winner(player)
     end
 
-  end # end of play_game
+  end #play_game
 
   def shoot(who, coords)
       who.board.cells[coords].fire_upon
-      display_shot_results(who, coords)
-  end # end of shoot
+      puts display_shot_results(who, coords)
+  end #shoot
 
   def display_shot_results(who, player_shot)
+    statement = nil
+
     if who == computer && who.board.cells.fetch(player_shot).ship == nil
-        puts "\nYour shot on #{player_shot} was a miss."
+        statement = "\nYour shot on #{player_shot} was a miss."
     elsif who == computer && who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
-        puts "\nYour shot on #{player_shot} sunk a ship!"
+        statement = "\nYour shot on #{player_shot} sunk a ship!"
     elsif who == computer && who.board.cells.fetch(player_shot).ship != nil
-        puts "\nYour shot on #{player_shot} was a hit!"
+        statement = "\nYour shot on #{player_shot} was a hit!"
     elsif who == player && who.board.cells.fetch(player_shot).ship == nil
-        puts "\n#{computer.name} shot on #{player_shot} was a miss."
+        statement = "\n#{computer.name} shot on #{player_shot} was a miss."
     elsif who == player && who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
-        puts "\n#{computer.name} shot on #{player_shot} sunk a ship!"
+        statement = "\n#{computer.name} shot on #{player_shot} sunk a ship!"
     elsif who == player && who.board.cells.fetch(player_shot).ship != nil
-        puts "\n#{computer.name} shot on #{player_shot} was a hit!"
+        statement = "\n#{computer.name} shot on #{player_shot} was a hit!"
     end
-  end # end of display_shot_results
+
+    statement
+  end #display_shot_results
 
   def print_board(who, conditional = false)
     if conditional == false
@@ -178,12 +202,12 @@ class Turn
     else
       return who.board.render(true)
     end
-  end # end of print_board
+  end #print_board
 
   def display_winner(winner)
     return puts "\nCongratulations! You won Battleship!\n" if winner == player
     return puts "\nYou lost all your ships! Computer won.\n" if winner == computer
-  end # end of display_winner
+  end #display_winner
 
 
 end

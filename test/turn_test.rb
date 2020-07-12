@@ -31,6 +31,9 @@ class TurnTest < Minitest::Test
     computer = Player.new(computer_board, computer_ships, "computer")
     turn = Turn.new(player, computer)
 
+    turn.player.board.set_board_size(4, 4)
+    turn.computer.board.set_board_size(4, 4)
+
     turn.player.board.place(player_ships[:submarine], ["A1", "A2"])
 
     turn.shoot(player, "A1")
@@ -48,11 +51,14 @@ class TurnTest < Minitest::Test
     computer = Player.new(computer_board, computer_ships, "computer")
     turn = Turn.new(player, computer)
 
+    turn.player.board.set_board_size(4, 4)
+    turn.computer.board.set_board_size(4, 4)
+
     turn.player.board.place(player_ships[:submarine], ["A1", "A2"])
     turn.player.board.place(player_ships[:cruiser], ["A4", "B4", "C4"])
 
-    assert_equal ("  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . . \n"), turn.print_board(player)
-    assert_equal ("  1 2 3 4 \nA S S . S \nB . . . S \nC . . . S \nD . . . . \n"), turn.print_board(player, true)
+    assert_equal "  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . .", turn.print_board(player)
+    assert_equal "  1 2 3 4 \nA S S . S \nB . . . S \nC . . . S \nD . . . .", turn.print_board(player, true)
 
   end
 
@@ -68,11 +74,14 @@ class TurnTest < Minitest::Test
     computer = Player.new(computer_board, computer_ships, "computer")
     turn = Turn.new(player, computer)
 
+    turn.player.board.set_board_size(4, 4)
+    turn.computer.board.set_board_size(4, 4)
+
     turn.player_setup_game # => requires manual input
 
     # => adjust test for whatever input you are going to use
     # => current test for sub at B3 B4 and cruiser at B1 C1 D1
-    assert_equal ("  1 2 3 4 \nA . . . . \nB S . S S \nC S . . . \nD S . . . \n"), turn.print_board(player, true)
+    assert_equal ("  1 2 3 4 \nA . . . . \nB S . S S \nC S . . . \nD S . . ."), turn.print_board(player, true)
 
   end
 
@@ -88,12 +97,47 @@ class TurnTest < Minitest::Test
     computer = Player.new(computer_board, computer_ships, "computer")
     turn = Turn.new(player, computer)
 
+    turn.player.board.set_board_size(4, 4)
+    turn.computer.board.set_board_size(4, 4)
+
     turn.computer_setup_game
 
     refute turn.computer.board.valid_placement?(turn.computer.ships[:submarine], turn.sub)
     refute turn.computer.board.valid_placement?(turn.computer.ships[:cruiser], turn.cru)
   end
 
-  # NEED MORE TESTS
+  def test_board_setup
+    skip
+    player_board = Board.new
+    player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
+    player = Player.new(player_board, player_ships, "player")
+
+    computer_board = Board.new
+    computer_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
+    computer = Player.new(computer_board, computer_ships, "computer")
+    turn = Turn.new(player, computer)
+
+    assert_equal player.board.cells.length, turn.setup_board
+  end
+
+  def test_display_shot_results
+    player_board = Board.new
+    player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
+    player = Player.new(player_board, player_ships, "player")
+
+    computer_board = Board.new
+    computer_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
+    computer = Player.new(computer_board, computer_ships, "Computer")
+    turn = Turn.new(player, computer)
+
+    turn.player.board.set_board_size(4, 4)
+
+    assert_equal "\nComputer shot on A1 was a miss.", turn.display_shot_results(player, "A1")
+
+    turn.player.board.place(player_ships[:submarine], ["A1", "A2"])
+
+    assert_equal "\nComputer shot on A1 was a hit!", turn.display_shot_results(player, "A1")
+  end
+
 
 end

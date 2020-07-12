@@ -5,7 +5,8 @@ class Board
 
   attr_reader :cells, :letters, :width
   def initialize()
-    @cells = {  #Uncomment @cells for testing
+    @cells = {
+      # Uncomment @cells for testing variable board
       # "A1" => Cell.new("A1"),
       # "A2" => Cell.new("A2"),
       # "A3" => Cell.new("A3"),
@@ -89,6 +90,9 @@ class Board
   end
 
   def ship_overlap?(placements)
+
+    # runs through all cells and if found a ship stored into
+    # a cell will place it into accumulator
     acc = []
     cells.each do |cell|
       if cell[1].ship != nil
@@ -96,8 +100,9 @@ class Board
       end
     end
 
+    # compares each cell that contains a ship to the placement
+    # coordinates given and return true or false if overlapping
     acc.each do |cell|
-      # require "pry"; binding.pry
       if placements.length == 2
         if cell.coordinates == placements[0] || cell.coordinates == placements[1]
           return true
@@ -120,7 +125,6 @@ class Board
     end
   end
 
-  #OPTIMIZE - Will refactor if possible
   def render(show_ship = false)
     board_string = " "
     count = 1
@@ -145,13 +149,13 @@ class Board
     board_string
   end
 
-  def get_board_size
-    p "What height would you like the board to be? (26 max)"
-    height = gets.chomp.to_i
-    p "What width would you like the board to be?"
-    @width = gets.chomp.to_i
+  def set_board_size(height, width)
+
+    @width = width
+
     alphabet = ('a'..'z').to_a
     @letters = alphabet[0..height - 1]
+
     letters.each do |letter|
       column = 1
       width.times do
@@ -161,5 +165,7 @@ class Board
         column += 1
       end
     end
-  end
-end
+
+  end #get_board_size
+
+end #board class

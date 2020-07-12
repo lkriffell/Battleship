@@ -13,16 +13,16 @@ class BoardTest < Minitest::Test
   end
 
   def test_valid_and_invalid_coordinates
-    skip
     board = Board.new
+    board.set_board_size(999, 999)
 
     assert board.valid_coordinate?("A1")
     refute board.valid_coordinate?("A1000")
   end
 
   def test_valid_placement_of_ships
-    skip
     board = Board.new
+    board.set_board_size(4, 4)
     cruiser = Ship.new("Cruiser", 3)
     submarine = Ship.new("Submarine", 2)
 
@@ -45,16 +45,15 @@ class BoardTest < Minitest::Test
 
   def test_validate_cell_placements_consecutive
     board = Board.new
-    board.get_board_size
-    # Manual test (Must enter a board size greater than 100)
+    board.set_board_size(115, 115)
 
     assert board.validate_cell_placements_consecutive(["A109", "A110"])
     assert board.validate_cell_placements_consecutive(["B107", "C107", "D107"])
   end
 
   def test_it_can_place_board
-    skip
     board = Board.new
+    board.set_board_size(4, 4)
     cruiser = Ship.new("Cruiser", 3)
 
     board.place(cruiser, ["A1", "A2", "A3"])
@@ -69,8 +68,8 @@ class BoardTest < Minitest::Test
   end
 
   def test_overlapping_ship_2?
-    skip
     board = Board.new
+    board.set_board_size(4, 4)
     cruiser = Ship.new("Cruiser", 3)
 
     board.place(cruiser, ["A1", "A2", "A3"])
@@ -81,8 +80,8 @@ class BoardTest < Minitest::Test
   end
 
   def test_overlapping_ship_3?
-    skip
     board = Board.new
+    board.set_board_size(4, 4)
     submarine = Ship.new("Submarine", 2)
 
     board.place(submarine, ["C4", "D4"])
@@ -93,20 +92,19 @@ class BoardTest < Minitest::Test
   end
 
   def test_board_render
-    skip
     board = Board.new
     cruiser = Ship.new("Cruiser", 3)
+    board.set_board_size(4, 4)
     board.place(cruiser, ["A1", "A2", "A3"])
 
-    assert_equal "  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . . \n", board.render
-    assert_equal "  1 2 3 4 \nA S S S . \nB . . . . \nC . . . . \nD . . . . \n", board.render(true)
+    assert_equal "  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . .", board.render
+    assert_equal "  1 2 3 4 \nA S S S . \nB . . . . \nC . . . . \nD . . . .", board.render(true)
   end
 
   def test_get_board_size
-    skip
     board = Board.new
-    board.get_board_size
-    # Manual test (Make height: 7 width: 7)
+    board.set_board_size(7, 7)
+
     assert_equal 49, board.cells.count
   end
 end
