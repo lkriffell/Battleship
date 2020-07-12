@@ -15,6 +15,7 @@ class Turn
 
     puts "\n\nIt's time to place your ships! You have a Submarine which is two units long and a Cruiser which is three units long. When choosing it's location on the board, you cannot choose diagonal path or place a ship on top of another ship.\n\n"
     puts "=============YOUR BOARD============="
+    # require "pry"; binding.pry
     puts print_board(player)
 
     ship_1_placement = :incomplete
@@ -101,7 +102,6 @@ class Turn
   def play_game
     # sets up computer board and player board
     computer_setup_game
-    require "pry"; binding.pry
     player_setup_game
 
     until player.has_lost? || computer.has_lost?
