@@ -18,8 +18,9 @@ class Turn
 
     print "\nWhat size board would you like (ex. 4x4, 10x10, etc.)? "
     user_input = gets.chomp.split("x")
+
     height = user_input[0].to_i
-    width = user_input[0].to_i
+    width = user_input[1].to_i
 
     player.board.set_board_size(height, width)
     computer.board.set_board_size(height, width)
@@ -124,6 +125,7 @@ class Turn
     # sets up ships for the player and computer
     computer_setup_game
     player_setup_game
+
   end #game_setup
 
   def play_game
@@ -227,7 +229,7 @@ class Turn
 
     fire = IntelligentFire.new(player, letter, number)
 
-    if @last_hit == :sunk
+    if @last_hit == nil
       fire.clear_array
     end
 

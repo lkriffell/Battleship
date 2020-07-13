@@ -156,7 +156,17 @@ class TurnTest < Minitest::Test
     turn.player.board.set_board_size(4, 4)
     turn.computer.board.set_board_size(4, 4)
 
-    turn.intelligent_fire("B3")
+    turn.player.board.place(player_ships[:cruiser], ["C1", "C2", "C3"])
+
+                                      #   1 2 3 4
+    turn.shoot(player, "C3") # => hit   A . . . .
+    turn.shoot(player, "C4") # => miss  B . . M .
+    turn.shoot(player, "B3") # => miss  C S S H M
+    turn.shoot(player, "D3") # => miss  D . . M .
+
+    turn.intelligent_fire(turn.last_hit)
+
+    assert_equal true, turn.player.board.cells["C2"].has_been_fired_on
   end
 
 

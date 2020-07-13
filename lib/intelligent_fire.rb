@@ -34,7 +34,7 @@ class IntelligentFire
   end
 
   def add_to_array
-  if previous_letter == true && (@player.board.cells[((@letter.ord - 1).chr) + @number.to_s].has_been_fired_on == false)
+    if previous_letter == true && (@player.board.cells[((@letter.ord - 1).chr) + @number.to_s].has_been_fired_on == false)
       @array << 1
     end
     if next_letter == true && (@player.board.cells[((@letter.ord + 1).chr) + @number.to_s].has_been_fired_on == false)
