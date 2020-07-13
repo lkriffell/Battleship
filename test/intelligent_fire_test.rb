@@ -1,50 +1,22 @@
 require 'minitest/autorun'
 require 'minitest/pride'
-require './lib/cell'
-require './lib/ship'
 require './lib/board'
 require './lib/player'
 require './lib/turn'
+require './lib/intelligent_fire'
 
-class TurnTest < Minitest::Test
-
-  def test_a_turn_exists
-    skip
+class TestIntelligentFire < Minitest::Test
+  def test_it_exists
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
 
-    computer_board = Board.new
-    computer_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
-    computer = Player.new(computer_board, computer_ships, "computer")
-    turn = Turn.new(player, computer)
+    fire = IntelligentFire.new(player, "C", 3)
 
-    assert_instance_of Turn, turn
+    assert_instance_of IntelligentFire, fire
   end
 
-  def test_players_can_shoot
-    skip
-    player_board = Board.new
-    player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
-    player = Player.new(player_board, player_ships, "player")
-
-    computer_board = Board.new
-    computer_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
-    computer = Player.new(computer_board, computer_ships, "computer")
-    turn = Turn.new(player, computer)
-
-    turn.player.board.set_board_size(4, 4)
-    turn.computer.board.set_board_size(4, 4)
-
-    turn.player.board.place(player_ships[:submarine], ["A1", "A2"])
-
-    turn.shoot(player, "A1")
-
-    assert_equal 1, player_ships[:submarine].health
-  end
-
-  def test_print_board
-    skip
+  def test_previous_letter
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
@@ -57,17 +29,16 @@ class TurnTest < Minitest::Test
     turn.player.board.set_board_size(4, 4)
     turn.computer.board.set_board_size(4, 4)
 
-    turn.player.board.place(player_ships[:submarine], ["A1", "A2"])
-    turn.player.board.place(player_ships[:cruiser], ["A4", "B4", "C4"])
+    fire = IntelligentFire.new(player, "C", 3)
 
-    assert_equal "  1 2 3 4 \nA . . . . \nB . . . . \nC . . . . \nD . . . .", turn.print_board(player)
-    assert_equal "  1 2 3 4 \nA S S . S \nB . . . S \nC . . . S \nD . . . .", turn.print_board(player, true)
+    assert_equal true, fire.previous_letter
 
+    fire = IntelligentFire.new(player, "A", 3)
+
+    assert_equal false, fire.previous_letter
   end
 
-  def test_game_setup_for_player
-    # => manual test as requires input
-    skip # please read assert before removing skip
+  def test_next_letter
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
@@ -80,17 +51,16 @@ class TurnTest < Minitest::Test
     turn.player.board.set_board_size(4, 4)
     turn.computer.board.set_board_size(4, 4)
 
-    turn.player_setup_game # => requires manual input
+    fire = IntelligentFire.new(player, "C", 3)
 
-    # => adjust test for whatever input you are going to use
-    # => current test for sub at B3 B4 and cruiser at B1 C1 D1
-    assert_equal ("  1 2 3 4 \nA . . . . \nB S . S S \nC S . . . \nD S . . ."), turn.print_board(player, true)
+    assert_equal true, fire.next_letter
 
+    fire = IntelligentFire.new(player, "D", 3)
+
+    assert_equal false, fire.next_letter
   end
 
-  def test_game_setup_for_computer
-    # OPTIMIZE: Refactor code as to not need global variabls to pass test
-    skip # => UN-comment code in turn.rb such as @sub @cru and related code
+  def test_right_number
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
@@ -103,14 +73,16 @@ class TurnTest < Minitest::Test
     turn.player.board.set_board_size(4, 4)
     turn.computer.board.set_board_size(4, 4)
 
-    turn.computer_setup_game
+    fire = IntelligentFire.new(player, "C", 3)
 
-    refute turn.computer.board.valid_placement?(turn.computer.ships[:submarine], turn.sub)
-    refute turn.computer.board.valid_placement?(turn.computer.ships[:cruiser], turn.cru)
+    assert_equal true, fire.right_number
+
+    fire = IntelligentFire.new(player, "C", 4)
+
+    assert_equal false, fire.right_number
   end
 
-  def test_board_setup
-    skip
+  def test_left_number
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
@@ -120,54 +92,73 @@ class TurnTest < Minitest::Test
     computer = Player.new(computer_board, computer_ships, "computer")
     turn = Turn.new(player, computer)
 
-    assert_equal player.board.cells.length, turn.setup_board
-  end
-
-  def test_display_shot_results
-    skip
-    player_board = Board.new
-    player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
-    player = Player.new(player_board, player_ships, "player")
-
-    computer_board = Board.new
-    computer_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
-    computer = Player.new(computer_board, computer_ships, "Computer")
-    turn = Turn.new(player, computer)
-
     turn.player.board.set_board_size(4, 4)
+    turn.computer.board.set_board_size(4, 4)
 
-    assert_equal "\nComputer shot on A1 was a miss.", turn.display_shot_results(player, "A1")
+    fire = IntelligentFire.new(player, "C", 3)
 
-    turn.player.board.place(player_ships[:submarine], ["A1", "A2"])
+    assert_equal true, fire.left_number
 
-    assert_equal "\nComputer shot on A1 was a hit!", turn.display_shot_results(player, "A1")
+    fire = IntelligentFire.new(player, "C", 1)
+
+    assert_equal false, fire.left_number
   end
 
-  def test_intelligent_fire
+  def test_can_add_to_array
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
 
     computer_board = Board.new
     computer_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
-    computer = Player.new(computer_board, computer_ships, "Computer")
+    computer = Player.new(computer_board, computer_ships, "computer")
     turn = Turn.new(player, computer)
 
     turn.player.board.set_board_size(4, 4)
     turn.computer.board.set_board_size(4, 4)
 
-    turn.player.board.place(player_ships[:cruiser], ["C1", "C2", "C3"])
+    fire = IntelligentFire.new(player, "C", 3)
 
-                                      #   1 2 3 4
-    turn.shoot(player, "C3") # => hit   A . . . .
-    turn.shoot(player, "C4") # => miss  B . . M .
-    turn.shoot(player, "B3") # => miss  C S S H M
-    turn.shoot(player, "D3") # => miss  D . . M .
-
-    turn.intelligent_fire(turn.last_hit)
-
-    assert_equal true, turn.player.board.cells["C2"].has_been_fired_on
+    assert_equal [1, 2, 3, 4], fire.add_to_array
   end
 
+  def test_can_remove_from_array
+    player_board = Board.new
+    player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
+    player = Player.new(player_board, player_ships, "player")
 
+    computer_board = Board.new
+    computer_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
+    computer = Player.new(computer_board, computer_ships, "computer")
+    turn = Turn.new(player, computer)
+
+    turn.player.board.set_board_size(4, 4)
+    turn.computer.board.set_board_size(4, 4)
+
+    fire = IntelligentFire.new(player, "C", 3)
+
+    fire.add_to_array
+
+    assert_equal 3, fire.remove_from_array(3)
+  end
+
+  def test_can_clear_array
+    player_board = Board.new
+    player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
+    player = Player.new(player_board, player_ships, "player")
+
+    computer_board = Board.new
+    computer_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
+    computer = Player.new(computer_board, computer_ships, "computer")
+    turn = Turn.new(player, computer)
+
+    turn.player.board.set_board_size(4, 4)
+    turn.computer.board.set_board_size(4, 4)
+
+    fire = IntelligentFire.new(player, "C", 3)
+
+    fire.add_to_array
+
+    assert_equal [], fire.clear_array
+  end
 end
