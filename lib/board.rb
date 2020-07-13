@@ -3,33 +3,37 @@ require './lib/cell'
 
 class Board
 
-  attr_reader :cells
+  attr_reader :cells, :letters, :width
   def initialize()
     @cells = {
-      "A1" => Cell.new("A1"),
-      "A2" => Cell.new("A2"),
-      "A3" => Cell.new("A3"),
-      "A4" => Cell.new("A4"),
-      "B1" => Cell.new("B1"),
-      "B2" => Cell.new("B2"),
-      "B3" => Cell.new("B3"),
-      "B4" => Cell.new("B4"),
-      "C1" => Cell.new("C1"),
-      "C2" => Cell.new("C2"),
-      "C3" => Cell.new("C3"),
-      "C4" => Cell.new("C4"),
-      "D1" => Cell.new("D1"),
-      "D2" => Cell.new("D2"),
-      "D3" => Cell.new("D3"),
-      "D4" => Cell.new("D4")
+      # Uncomment @cells for testing variable board
+      # "A1" => Cell.new("A1"),
+      # "A2" => Cell.new("A2"),
+      # "A3" => Cell.new("A3"),
+      # "A4" => Cell.new("A4"),
+      # "B1" => Cell.new("B1"),
+      # "B2" => Cell.new("B2"),
+      # "B3" => Cell.new("B3"),
+      # "B4" => Cell.new("B4"),
+      # "C1" => Cell.new("C1"),
+      # "C2" => Cell.new("C2"),
+      # "C3" => Cell.new("C3"),
+      # "C4" => Cell.new("C4"),
+      # "D1" => Cell.new("D1"),
+      # "D2" => Cell.new("D2"),
+      # "D3" => Cell.new("D3"),
+      # "D4" => Cell.new("D4")
     }
+    @letters = letters
+    @width = width
 
   end
 
+
   def valid_coordinate?(coords)
-    cells.find do |cell|
-      return true if cell[1].coordinates == coords
-    end
+    # split_coords(coords)
+      @cells.include?(coords)
+      # cell.coordinates == coords
   end
 
   def valid_placement?(ship, placements)
@@ -44,13 +48,22 @@ class Board
   def split_coords(placements)
     coords = []
     placements.map do |coord|
-      coords << coord.split('')
+      split_up_coords = coord.split('')
+      if split_up_coords.size == 3
+        coords << split_up_coords[0]
+        coords << split_up_coords[1..2].join
+      elsif split_up_coords.size == 4
+        coords << split_up_coords[0]
+        coords << split_up_coords[1..3].join
+      else
+        coords << split_up_coords[0]
+        coords << split_up_coords[1]
+      end
     end
-    coords.join.split('')
   end
 
   def validate_cell_placements_consecutive(placements)
-    coords = split_coords(placements)
+    coords = split_coords(placements).first # This returns an array of two arrays (The second array is equal to the first and we only want one)
     # If the first coord num plus 1 equals the next coord num
     # And the first coord letter equals the next coord letter
     if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2]
@@ -77,21 +90,25 @@ class Board
   end
 
   def ship_overlap?(placements)
-    acc = []
 
-    @cells.each do |cell|
+    # runs through all cells and if found a ship stored into
+    # a cell will place it into accumulator
+    acc = []
+    cells.each do |cell|
       if cell[1].ship != nil
-        acc << cell
+        acc << cell[1]
       end
     end
 
+    # compares each cell that contains a ship to the placement
+    # coordinates given and return true or false if overlapping
     acc.each do |cell|
       if placements.length == 2
-        if cell[0] == placements[0] || cell[0] == placements[1]
+        if cell.coordinates == placements[0] || cell.coordinates == placements[1]
           return true
         end
       elsif placements.length == 3
-        if cell[0] == placements[0] || cell[0] == placements[1] || cell[0] == placements[2]
+        if cell.coordinates == placements[0] || cell.coordinates == placements[1] || cell.coordinates == placements[2]
           return true
         end
       end
@@ -108,12 +125,47 @@ class Board
     end
   end
 
-  #OPTIMIZE - Will refactor if possible
   def render(show_ship = false)
-    if show_ship == true
-      return "  1 2 3 4 \nA #{@cells["A1"].render(true)} #{@cells["A2"].render(true)} #{@cells["A3"].render(true)} #{@cells["A4"].render(true)} \nB #{@cells["B1"].render(true)} #{@cells["B2"].render(true)} #{@cells["B3"].render(true)} #{@cells["B4"].render(true)} \nC #{@cells["C1"].render(true)} #{@cells["C2"].render(true)} #{@cells["C3"].render(true)} #{@cells["C4"].render(true)} \nD #{@cells["D1"].render(true)} #{@cells["D2"].render(true)} #{@cells["D3"].render(true)} #{@cells["D4"].render(true)} \n"
-    else
-      return "  1 2 3 4 \nA #{@cells["A1"].render} #{@cells["A2"].render} #{@cells["A3"].render} #{@cells["A4"].render} \nB #{@cells["B1"].render} #{@cells["B2"].render} #{@cells["B3"].render} #{@cells["B4"].render} \nC #{@cells["C1"].render} #{@cells["C2"].render} #{@cells["C3"].render} #{@cells["C4"].render} \nD #{@cells["D1"].render} #{@cells["D2"].render} #{@cells["D3"].render} #{@cells["D4"].render} \n"
+    board_string = " "
+    count = 1
+    num_array = []
+
+    @width.times do
+      board_string << " #{count}"
+      num_array << count
+      count += 1
     end
+
+    @letters.each do |letter|
+      board_string << " \n#{letter.upcase}"
+      num_array.each do |number|
+        if show_ship == true
+          board_string << " #{@cells["#{letter.upcase + number.to_s}"].render(true)}"
+        else
+          board_string << " #{@cells["#{letter.upcase + number.to_s}"].render}"
+        end
+      end
+    end
+    board_string
   end
-end
+
+  def set_board_size(height, width)
+
+    @width = width
+
+    alphabet = ('a'..'z').to_a
+    @letters = alphabet[0..height - 1]
+
+    letters.each do |letter|
+      column = 1
+      width.times do
+        coord = letter + column.to_s
+        @cells[coord.upcase] = Cell.new(coord.upcase)
+        coord = ''
+        column += 1
+      end
+    end
+
+  end #get_board_size
+
+end #board class

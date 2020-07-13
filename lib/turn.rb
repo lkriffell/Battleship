@@ -1,20 +1,40 @@
+require './lib/intelligent_fire'
+
 class Turn
 
-  attr_reader :player, :computer
+  attr_reader :player, :computer, :last_hit
 
   def initialize(player, computer)
     @player = player
     @computer = computer
+    @last_hit = nil
 
     # used for testing
     # @sub = nil
     # @cru = nil
-  end # end of initialize
+  end #initialize
+
+  def setup_board
+
+    print "\nWhat size board would you like (ex. 4x4, 10x10, etc.)? "
+    user_input = gets.chomp.split("x")
+
+    height = user_input[0].to_i
+    width = user_input[1].to_i
+
+    player.board.set_board_size(height, width)
+    computer.board.set_board_size(height, width)
+
+    # returns length of board - not used by game
+    # used for testing
+    player.board.cells.length
+  end #setup_board
 
   def player_setup_game
 
-    puts "\n\nIt's time to place your ships! You have a Submarine which is two units long and a Cruiser which is three units long. When choosing it's location on the board, you cannot choose diagonal path or place a ship on top of another ship.\n\n"
+    puts "\nIt's time to place your ships! You have a Submarine which is two units long and a Cruiser which is three units long. When choosing it's location on the board, you cannot choose diagonal path or place a ship on top of another ship.\n\n"
     puts "=============YOUR BOARD============="
+    # require "pry"; binding.pry
     puts print_board(player)
 
     ship_1_placement = :incomplete
@@ -58,7 +78,7 @@ class Turn
       end
     end
 
-  end # end of player_setup_game
+  end #player_setup_game
 
   def computer_setup_game
     ship_1_placement = :incomplete
@@ -96,13 +116,19 @@ class Turn
       end
     end # end of until loop
 
-  end # end of computer_setup_game
+  end #computer_setup_game
 
-  def play_game
-    # sets up computer board and player board
+  def game_setup
+    # sets up board size
+    setup_board
+
+    # sets up ships for the player and computer
     computer_setup_game
     player_setup_game
 
+  end #game_setup
+
+  def play_game
     until player.has_lost? || computer.has_lost?
 
       # display_the_boards
@@ -127,12 +153,17 @@ class Turn
         end
       end
 
+      break if computer.has_lost?
+
       # COMPUTER SHOOT
       shot_successful = :fail
 
       until shot_successful == :success
         random_shot  = player.board.cells.values.sample(1)
-        if random_shot[0].has_been_fired_on == true
+        if last_hit != nil
+          intelligent_fire(last_hit)
+          shot_successful = :success
+        elsif random_shot[0].has_been_fired_on == true
           # coordinate has been fired upon return to beginning of loop
         elsif random_shot[0].has_been_fired_on == false
           shoot(player, random_shot[0].coordinates)
@@ -148,28 +179,34 @@ class Turn
       display_winner(player)
     end
 
-  end # end of play_game
+  end #play_game
 
   def shoot(who, coords)
       who.board.cells[coords].fire_upon
-      display_shot_results(who, coords)
-  end # end of shoot
+      puts display_shot_results(who, coords)
+  end #shoot
 
   def display_shot_results(who, player_shot)
+    statement = nil
+
     if who == computer && who.board.cells.fetch(player_shot).ship == nil
-        puts "\nYour shot on #{player_shot} was a miss."
+        statement = "\nYour shot on #{player_shot} was a miss."
     elsif who == computer && who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
-        puts "\nYour shot on #{player_shot} sunk a ship!"
+        statement = "\nYour shot on #{player_shot} sunk a ship!"
     elsif who == computer && who.board.cells.fetch(player_shot).ship != nil
-        puts "\nYour shot on #{player_shot} was a hit!"
+        statement = "\nYour shot on #{player_shot} was a hit!"
     elsif who == player && who.board.cells.fetch(player_shot).ship == nil
-        puts "\n#{computer.name} shot on #{player_shot} was a miss."
+        statement = "\n#{computer.name}'s shot on #{player_shot} was a miss."
     elsif who == player && who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
-        puts "\n#{computer.name} shot on #{player_shot} sunk a ship!"
+        @last_hit = nil
+        statement = "\n#{computer.name}'s shot on #{player_shot} sunk a ship!"
     elsif who == player && who.board.cells.fetch(player_shot).ship != nil
-        puts "\n#{computer.name} shot on #{player_shot} was a hit!"
+        @last_hit = player_shot
+        statement = "\n#{computer.name}'s shot on #{player_shot} was a hit!"
     end
-  end # end of display_shot_results
+
+    statement
+  end #display_shot_results
 
   def print_board(who, conditional = false)
     if conditional == false
@@ -177,12 +214,46 @@ class Turn
     else
       return who.board.render(true)
     end
-  end # end of print_board
+  end #print_board
 
   def display_winner(winner)
-    return puts "\nCongratulations! You won Battleship!\n" if winner == player
-    return puts "\nYou lost all your ships! Computer won.\n" if winner == computer
-  end # end of display_winner
+    return puts "\nCongratulations! You won Battleship!\n\n" if winner == player
+    return puts "\nYou lost all your ships! Computer won.\n\n" if winner == computer
+  end #display_winner
+
+  def intelligent_fire(last_hit)
+
+    mediator = last_hit.split("")
+    letter = mediator[0]
+    number = mediator[1].to_i
+
+    fire = IntelligentFire.new(player, letter, number)
+
+    if @last_hit == nil
+      fire.clear_array
+    end
+
+    fire.add_to_array
+
+    if fire.array != 0
+      educated_shot = fire.array.sample
+
+      if educated_shot == 1
+        shoot(player, ((letter.ord - 1).chr) + number.to_s)
+        fire.remove_from_array(1)
+      elsif educated_shot == 2
+        shoot(player, ((letter.ord + 1).chr) + number.to_s)
+        fire.remove_from_array(2)
+      elsif educated_shot == 3
+        shoot(player, letter + ((number + 1)).to_s)
+        fire.remove_from_array(3)
+      elsif educated_shot == 4
+        shoot(player, letter + ((number - 1)).to_s)
+        fire.remove_from_array(4)
+      end
+    end
+
+  end
 
 
 end
