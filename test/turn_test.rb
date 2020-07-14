@@ -9,7 +9,6 @@ require './lib/turn'
 class TurnTest < Minitest::Test
 
   def test_a_turn_exists
-    skip
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
@@ -23,7 +22,6 @@ class TurnTest < Minitest::Test
   end
 
   def test_players_can_shoot
-    skip
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
@@ -44,7 +42,6 @@ class TurnTest < Minitest::Test
   end
 
   def test_print_board
-    skip
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
@@ -110,7 +107,6 @@ class TurnTest < Minitest::Test
   end
 
   def test_board_setup
-    skip
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
@@ -120,11 +116,10 @@ class TurnTest < Minitest::Test
     computer = Player.new(computer_board, computer_ships, "computer")
     turn = Turn.new(player, computer)
 
-    assert_equal player.board.cells.length, turn.setup_board
+    assert_equal turn.setup_board, turn.player.board.cells.length
   end
 
   def test_display_shot_results
-    skip
     player_board = Board.new
     player_ships = {:submarine => Ship.new("submarine", 2), :cruiser => Ship.new("Cruiser", 3)}
     player = Player.new(player_board, player_ships, "player")
@@ -136,11 +131,11 @@ class TurnTest < Minitest::Test
 
     turn.player.board.set_board_size(4, 4)
 
-    assert_equal "\nComputer shot on A1 was a miss.", turn.display_shot_results(player, "A1")
+    assert_equal "\nComputer's shot on A1 was a miss.", turn.display_shot_results(player, "A1")
 
     turn.player.board.place(player_ships[:submarine], ["A1", "A2"])
 
-    assert_equal "\nComputer shot on A1 was a hit!", turn.display_shot_results(player, "A1")
+    assert_equal "\nComputer's shot on A1 was a hit!", turn.display_shot_results(player, "A1")
   end
 
   def test_intelligent_fire

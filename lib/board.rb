@@ -37,11 +37,8 @@ class Board
   end
 
   def valid_placement?(ship, placements)
-    if ship_overlap?(placements) == true
-      return false
-    elsif validate_cell_placements_consecutive(placements) == true && ship.length == placements.size
-      true
-    end
+    return false if ship_overlap?(placements) == true
+    return true if validate_cell_placements_consecutive(placements) == true && ship.length == placements.size
   end
 
   # Helper method to split coords to determine valid placements
