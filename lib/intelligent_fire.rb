@@ -10,30 +10,33 @@ class IntelligentFire
   end
 
   def previous_letter
-    # if letter - 1 exists shoot there
+    # if letter - 1 exists => viable option
     return true if @player.board.letters.include?((@letter.ord - 1).chr.downcase)
     false
   end
 
   def next_letter
-    # if letter + 1 exists shoot there
+    # if letter + 1 exists => viable option
     return true if @player.board.letters.include?((@letter.ord + 1).chr.downcase)
     false
   end
 
   def right_number
-    # shoots to the right of the last_hit
+    # if number to the right exists => viable option
     return true if @number + 1  <= @player.board.width
     false
   end
 
   def left_number
-    # shoots to the left of the last_hit
+    # if number to the left exists => viable option
     return true if @number - 1  != 0
     false
   end
 
   def add_to_array
+
+    # adds viable shooting options to the array if not fired upon previously
+
     if previous_letter == true && (@player.board.cells[((@letter.ord - 1).chr) + @number.to_s].has_been_fired_on == false)
       @array << 1
     end
@@ -56,6 +59,11 @@ class IntelligentFire
 
   def clear_array
     @array.clear
+  end
+
+  def hit_comparison(hit_new, hit_old)
+    return :horizontal if hit_new[0] == hit_old[0]
+    return :vertical if hit_new[1] == hit_old[1]
   end
 
 end

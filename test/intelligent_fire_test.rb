@@ -161,4 +161,11 @@ class TestIntelligentFire < Minitest::Test
 
     assert_equal [], fire.clear_array
   end
+
+  def test_hit_comparison
+    fire = IntelligentFire.new("player", "C", 3)
+
+    assert_equal :horizontal, fire.hit_comparison("C2", "C3")
+    assert_equal :vertical, fire.hit_comparison("B3", "C3")
+  end
 end

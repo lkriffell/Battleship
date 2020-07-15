@@ -2,12 +2,16 @@ require './lib/intelligent_fire'
 
 class Turn
 
-  attr_reader :player, :computer, :last_hit
+  attr_reader :player, :computer
+
+  # used for testing
+  #attr_reader :last_hit, :sub, :cru
 
   def initialize(player, computer)
     @player = player
     @computer = computer
     @last_hit = nil
+    @sunk_ship_coord = nil
 
     # used for testing
     # @sub = nil
@@ -199,8 +203,8 @@ class Turn
 
       until shot_successful == :success
         random_shot  = player.board.cells.values.sample(1)
-        if last_hit != nil
-          intelligent_fire(last_hit)
+        if @last_hit != nil
+          intelligent_fire(@last_hit)
           shot_successful = :success
         elsif random_shot[0].has_been_fired_on == true
           # coordinate has been fired upon return to beginning of loop
@@ -237,6 +241,7 @@ class Turn
     elsif who == player && who.board.cells.fetch(player_shot).ship == nil
         statement = "\n#{computer.name}'s shot on #{player_shot} was a miss."
     elsif who == player && who.board.cells.fetch(player_shot).ship != nil && who.board.cells.fetch(player_shot).ship.sunk?
+        @sunk_ship_coord = @last_hit
         @last_hit = nil
         statement = "\n#{computer.name}'s shot on #{player_shot} sunk a ship!"
     elsif who == player && who.board.cells.fetch(player_shot).ship != nil
@@ -248,11 +253,8 @@ class Turn
   end #display_shot_results
 
   def print_board(who, conditional = false)
-    if conditional == false
-      return who.board.render
-    else
-      return who.board.render(true)
-    end
+      return who.board.render if conditional == false
+      return who.board.render(true)if conditional == true
   end #print_board
 
   def display_winner(winner)
@@ -260,39 +262,42 @@ class Turn
     return puts "\nYou lost all your ships! Computer won.\n\n" if winner == computer
   end #display_winner
 
-  def intelligent_fire(last_hit)
+  def intelligent_fire(last_hit_coordinate)
 
-    mediator = last_hit.split("")
+    mediator = last_hit_coordinate.split("")
     letter = mediator[0]
     number = mediator[1].to_i
 
-    fire = IntelligentFire.new(player, letter, number)
+    viable_options = IntelligentFire.new(player, letter, number)
 
-    if @last_hit == nil
-      fire.clear_array
+    # clears left overs stored in array after sinking a ship
+    if @sunk_ship_coord != last_hit_coordinate
+      viable_options.clear_array
     end
 
-    fire.add_to_array
+    # adds viable firing options to array
+    viable_options.add_to_array
 
-    if fire.array != 0
-      educated_shot = fire.array.sample
+    # takes sample from viable options array
+    educated_shot = viable_options.array.sample
 
-      if educated_shot == 1
-        shoot(player, ((letter.ord - 1).chr) + number.to_s)
-        fire.remove_from_array(1)
-      elsif educated_shot == 2
-        shoot(player, ((letter.ord + 1).chr) + number.to_s)
-        fire.remove_from_array(2)
-      elsif educated_shot == 3
-        shoot(player, letter + ((number + 1)).to_s)
-        fire.remove_from_array(3)
-      elsif educated_shot == 4
-        shoot(player, letter + ((number - 1)).to_s)
-        fire.remove_from_array(4)
-      end
+    # shoots at whichever viable option was chosen from above
+    if educated_shot == 1
+      shoot(player, ((letter.ord - 1).chr) + number.to_s)
+      viable_options.remove_from_array(1)
+    elsif educated_shot == 2
+      shoot(player, ((letter.ord + 1).chr) + number.to_s)
+      viable_options.remove_from_array(2)
+    elsif educated_shot == 3
+      shoot(player, letter + (number + 1).to_s)
+      viable_options.remove_from_array(3)
+    elsif educated_shot == 4
+      shoot(player, letter + (number - 1).to_s)
+      viable_options.remove_from_array(4)
     end
 
-  end
+
+  end #intelligent_fire
 
 
 end
