@@ -16,11 +16,21 @@ class Turn
 
   def setup_board
 
-    print "\nWhat size board would you like (ex. 4x4, 10x10, etc.)? "
-    user_input = gets.chomp.split("x")
+    input = :incomplete
+    until input == :complete
+    print "\nWhat size board would you like (ex. 4x4, 10x10, max: 26x999)? "
 
-    height = user_input[0].to_i
-    width = user_input[1].to_i
+      user_input = gets.chomp.split("x")
+
+      height = user_input[0].to_i
+      width = user_input[1].to_i
+
+      if height > 26 || width > 999
+        puts "\nPlease enter valid dimensions"
+      else
+        input = :complete
+      end
+    end
 
     player.board.set_board_size(height, width)
     computer.board.set_board_size(height, width)
@@ -80,6 +90,46 @@ class Turn
 
   end #player_setup_game
 
+  def computer_setup_game
+    ship_1_placement = :incomplete
+    ship_2_placement = :incomplete
+
+    #placement of submarine
+    until ship_1_placement == :complete
+      first_cell_pick = computer.board.cells.keys.sample(1)
+      cell_picks = pick_next_cell(first_cell_pick)
+      if computer.board.valid_coordinate?(cell_picks[0]) && computer.board.valid_coordinate?(cell_picks[1])
+        if computer.board.valid_placement?(computer.ships[:submarine], [cell_picks[0],cell_picks[1]])
+          computer.board.place(computer.ships[:submarine], [cell_picks[0],cell_picks[1]])
+
+          # for testing purposes
+          #@sub = [cell_picks[0],cell_picks[1]]
+
+          ship_1_placement = :complete
+        end
+      end
+    end # end of until loop
+
+    #placement of cruiser
+    until ship_2_placement == :complete
+      first_cell_pick = computer.board.cells.keys.sample(1)
+      cell_picks = pick_next_cell(first_cell_pick)
+      cell_picks << pick_next_cell([cell_picks[1]])
+      cell_picks = cell_picks.flatten!.uniq
+      if computer.board.valid_coordinate?(cell_picks[0]) && computer.board.valid_coordinate?(cell_picks[1]) && computer.board.valid_coordinate?(cell_picks[2])
+        if computer.board.valid_placement?(computer.ships[:cruiser], [cell_picks[0],cell_picks[1],cell_picks[2]])
+          computer.board.place(computer.ships[:cruiser], [cell_picks[0],cell_picks[1],cell_picks[2]])
+
+            # for testing purposes
+            #@cru = [cell_picks[0],cell_picks[1],cell_picks[2]]
+
+          ship_2_placement = :complete
+        end
+      end
+    end # end of until loop
+
+  end #computer_setup_game
+
   def pick_next_cell(previous_cell)
     split_up_coords = computer.board.split_coords(previous_cell).flatten!
     letter = split_up_coords[0]
@@ -106,47 +156,6 @@ class Turn
       (previous_cell.unshift(next_cell)).flatten!
     end
   end
-
-  def computer_setup_game
-    ship_1_placement = :incomplete
-    ship_2_placement = :incomplete
-
-    #placement of submarine
-    until ship_1_placement == :complete
-      first_cell_pick = computer.board.cells.keys.sample(1)
-      cell_picks = pick_next_cell(first_cell_pick)
-      if computer.board.valid_coordinate?(cell_picks[0]) && computer.board.valid_coordinate?(cell_picks[1])
-        if computer.board.valid_placement?(computer.ships[:submarine], [cell_picks[0],cell_picks[1]])
-          computer.board.place(computer.ships[:submarine], [cell_picks[0],cell_picks[1]])
-
-          # for testing purposes
-          #@sub = [cell_picks[0],cell_picks[1]]
-
-          ship_1_placement = :complete
-        end
-      end
-    end # end of until loop
-
-    #placement of cruiser
-    until ship_2_placement == :complete
-      first_cell_pick = computer.board.cells.keys.sample(1)
-      cell_picks = pick_next_cell(first_cell_pick)
-      require "pry"; binding.pry
-      cell_picks << pick_next_cell([cell_picks[1]])
-      # ["B58", "C58", ["C58", "C59"]]
-      if computer.board.valid_coordinate?(cell_picks[0]) && computer.board.valid_coordinate?(cell_picks[1]) && computer.board.valid_coordinate?(cell_picks[2])
-        if computer.board.valid_placement?(computer.ships[:cruiser], [cell_picks[0],cell_picks[1],cell_picks[2]])
-          computer.board.place(computer.ships[:cruiser], [cell_picks[0],cell_picks[1],cell_picks[2]])
-
-            # for testing purposes
-            #@cru = [cell_picks[0],cell_picks[1],cell_picks[2]]
-
-          ship_2_placement = :complete
-        end
-      end
-    end # end of until loop
-
-  end #computer_setup_game
 
   def game_setup
     # sets up board size
