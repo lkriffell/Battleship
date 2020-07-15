@@ -63,11 +63,11 @@ class Board
   end
 
   def validate_cell_placements_consecutive(placements)
-    coords = split_coords(placements).first # This returns an array of two arrays (The second array is equal to the first and we only want one)
+    coords = split_coords(placements).first
     # If the first coord num plus 1 equals the next coord num
     # And the first coord letter equals the next coord letter
     if coords[1].to_i + 1 == coords[3].to_i && coords[0] == coords[2]
-      horizontal = true# Testing a ship with max length
+      horizontal = true
       if coords.size == 6 && horizontal == true
         if coords[3].to_i + 1 == coords[5].to_i && coords[2] == coords[4]
           true
@@ -78,7 +78,6 @@ class Board
       # If the first coord num equals the next coord num
       # And the first coord letter plus one equals the next coord letter
     elsif horizontal == nil && coords[1].to_i == coords[3].to_i && coords[0].ord + 1 == coords[2].ord
-      # require "pry"; binding.pry
       if coords.size == 6
         if coords[3].to_i == coords[5].to_i && coords[2].ord + 1 == coords[4].ord
           true

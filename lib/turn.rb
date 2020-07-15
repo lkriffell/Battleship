@@ -16,11 +16,21 @@ class Turn
 
   def setup_board
 
-    print "\nWhat size board would you like (ex. 4x4, 10x10, etc.)? "
-    user_input = gets.chomp.split("x")
+    input = :incomplete
+    until input == :complete
+    print "\nWhat size board would you like (ex. 4x4, 10x10, max: 26x999)? "
 
-    height = user_input[0].to_i
-    width = user_input[1].to_i
+      user_input = gets.chomp.split("x")
+
+      height = user_input[0].to_i
+      width = user_input[1].to_i
+
+      if height > 26 || width > 999
+        puts "\nPlease enter valid dimensions"
+      else
+        input = :complete
+      end
+    end
 
     player.board.set_board_size(height, width)
     computer.board.set_board_size(height, width)
@@ -86,13 +96,14 @@ class Turn
 
     #placement of submarine
     until ship_1_placement == :complete
-      rand_cells_1 = computer.board.cells.keys.sample(2)
-      if computer.board.valid_coordinate?(rand_cells_1[0]) && computer.board.valid_coordinate?(rand_cells_1[1])
-        if computer.board.valid_placement?(computer.ships[:submarine], [rand_cells_1[0],rand_cells_1[1]])
-          computer.board.place(computer.ships[:submarine], [rand_cells_1[0],rand_cells_1[1]])
+      first_cell_pick = computer.board.cells.keys.sample(1)
+      cell_picks = pick_next_cell(first_cell_pick)
+      if computer.board.valid_coordinate?(cell_picks[0]) && computer.board.valid_coordinate?(cell_picks[1])
+        if computer.board.valid_placement?(computer.ships[:submarine], [cell_picks[0],cell_picks[1]])
+          computer.board.place(computer.ships[:submarine], [cell_picks[0],cell_picks[1]])
 
           # for testing purposes
-          #@sub = [rand_cells_1[0],rand_cells_1[1]]
+          #@sub = [cell_picks[0],cell_picks[1]]
 
           ship_1_placement = :complete
         end
@@ -101,15 +112,16 @@ class Turn
 
     #placement of cruiser
     until ship_2_placement == :complete
-      rand_cells_2 = computer.board.cells.keys.sample(3)
-      if computer.board.valid_coordinate?(rand_cells_2[0]) && computer.board.valid_coordinate?(rand_cells_2[1]) && computer.board.valid_coordinate?(rand_cells_2[2])
-        if computer.board.valid_placement?(computer.ships[:cruiser], [rand_cells_2[0],rand_cells_2[1],rand_cells_2[2]])
-          computer.board.place(computer.ships[:cruiser], [rand_cells_2[0],rand_cells_2[1],rand_cells_2[2]])
-          # p "Computer's board"
-          # puts print_board(computer, true)
+      first_cell_pick = computer.board.cells.keys.sample(1)
+      cell_picks = pick_next_cell(first_cell_pick)
+      cell_picks << pick_next_cell([cell_picks[1]])
+      cell_picks = cell_picks.flatten!.uniq
+      if computer.board.valid_coordinate?(cell_picks[0]) && computer.board.valid_coordinate?(cell_picks[1]) && computer.board.valid_coordinate?(cell_picks[2])
+        if computer.board.valid_placement?(computer.ships[:cruiser], [cell_picks[0],cell_picks[1],cell_picks[2]])
+          computer.board.place(computer.ships[:cruiser], [cell_picks[0],cell_picks[1],cell_picks[2]])
 
             # for testing purposes
-            #@cru = [rand_cells_2[0],rand_cells_2[1],rand_cells_2[2]]
+            #@cru = [cell_picks[0],cell_picks[1],cell_picks[2]]
 
           ship_2_placement = :complete
         end
@@ -117,6 +129,33 @@ class Turn
     end # end of until loop
 
   end #computer_setup_game
+
+  def pick_next_cell(previous_cell)
+    split_up_coords = computer.board.split_coords(previous_cell).flatten!
+    letter = split_up_coords[0]
+    number = split_up_coords[1]
+    # require "pry"; binding.pry
+    # split_up_coords = split_up_coords.flatten!
+    cells_to_sample = []
+    if letter != computer.board.letters.first
+      cells_to_sample << (letter.ord - 1).chr + number.to_s
+    end
+    if letter != computer.board.letters.last
+      cells_to_sample << (letter.ord + 1).chr + number.to_s
+    end
+    if number != computer.board.width
+      cells_to_sample << letter + (number.to_i + 1).to_s
+    end
+    if number != 1
+      cells_to_sample << letter + (number.to_i - 1).to_s
+    end
+    next_cell = cells_to_sample.sample(1)
+    if next_cell[0] > previous_cell[0]
+      (previous_cell << next_cell).flatten!
+    else
+      (previous_cell.unshift(next_cell)).flatten!
+    end
+  end
 
   def game_setup
     # sets up board size
