@@ -9,10 +9,8 @@ class Player
   end
 
   def has_lost?
-    if ships[:submarine].sunk? == true && ships[:cruiser].sunk? == true
+    if ships[:submarine].sunk? && ships[:cruiser].sunk?
       true
-    else
-      false
     end
   end
 

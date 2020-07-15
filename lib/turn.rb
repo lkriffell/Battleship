@@ -5,7 +5,7 @@ class Turn
   attr_reader :player, :computer
 
   # used for testing
-  #attr_reader :last_hit, :sub, :cru
+  attr_reader :last_hit, :sub, :cru
 
   def initialize(player, computer)
     @player = player
@@ -14,27 +14,39 @@ class Turn
     @sunk_ship_coord = nil
 
     # used for testing
-    # @sub = nil
-    # @cru = nil
+    @sub = nil
+    @cru = nil
   end #initialize
 
   def setup_board
 
     input = :incomplete
     until input == :complete
-    print "\nWhat size board would you like (ex. 4x4, 10x10, max: 26x999)? "
+    print "\nHow many rows would you like (max: 26)? "
 
-      user_input = gets.chomp.split("x")
+      height = gets.chomp.to_i
 
-      height = user_input[0].to_i
-      width = user_input[1].to_i
-
-      if height > 26 || width > 999
+      if height > 26 || height < 1
         puts "\nPlease enter valid dimensions"
       else
         input = :complete
       end
     end
+
+    input = :incomplete
+    until input == :complete
+    print "\nHow many columns would you like (max: 999)? "
+
+      width = gets.chomp.to_i
+
+      if width > 999 || width < 1
+        puts "\nPlease enter valid dimensions"
+      else
+        input = :complete
+      end
+    end
+
+
 
     player.board.set_board_size(height, width)
     computer.board.set_board_size(height, width)
@@ -48,7 +60,6 @@ class Turn
 
     puts "\nIt's time to place your ships! You have a Submarine which is two units long and a Cruiser which is three units long. When choosing it's location on the board, you cannot choose diagonal path or place a ship on top of another ship.\n\n"
     puts "=============YOUR BOARD============="
-    # require "pry"; binding.pry
     puts print_board(player)
 
     ship_1_placement = :incomplete
@@ -107,7 +118,7 @@ class Turn
           computer.board.place(computer.ships[:submarine], [cell_picks[0],cell_picks[1]])
 
           # for testing purposes
-          #@sub = [cell_picks[0],cell_picks[1]]
+          @sub = [cell_picks[0],cell_picks[1]]
 
           ship_1_placement = :complete
         end
@@ -125,7 +136,7 @@ class Turn
           computer.board.place(computer.ships[:cruiser], [cell_picks[0],cell_picks[1],cell_picks[2]])
 
             # for testing purposes
-            #@cru = [cell_picks[0],cell_picks[1],cell_picks[2]]
+            @cru = [cell_picks[0],cell_picks[1],cell_picks[2]]
 
           ship_2_placement = :complete
         end
@@ -138,7 +149,6 @@ class Turn
     split_up_coords = computer.board.split_coords(previous_cell).flatten!
     letter = split_up_coords[0]
     number = split_up_coords[1]
-    # require "pry"; binding.pry
     # split_up_coords = split_up_coords.flatten!
     cells_to_sample = []
     if letter != computer.board.letters.first
