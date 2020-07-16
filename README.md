@@ -1,5 +1,5 @@
-#BATTLESHIP
-##Authors
+# BATTLESHIP
+## Authors
   * Logan Riffell
   * Hash Gari
 
